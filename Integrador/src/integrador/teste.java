@@ -21,14 +21,8 @@ import org.apache.commons.mail.SimpleEmail;
  */
 public class teste {
 
-    static Connection c = null;
-
-    public teste() throws SQLException {
-        
-    }
-
     public static void main(String[] args) throws SQLException, EmailException {
-        SendEmail.send("danielfmelo21@gmail.com", 
+        SendEmail.send("daniel.freitas@eliteconsultores.com.br", 
                 "ola", 
                 "teste de email, ta tudo correndo super tranquilo", 
                 "daniel.melo42@outlook.com", 
