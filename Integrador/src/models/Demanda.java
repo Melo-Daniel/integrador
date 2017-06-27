@@ -11,19 +11,37 @@ package models;
  */
 public class Demanda {
     private int id,cod,prioridadeContabil, prioridadeRelacionamento,status;
-    private String empresa,regime,colaboradorContabil,colaboradorRelacionamento;
-    
-    public Demanda(int cod, int prioridadeContabil, int prioridadeRelacionamento, String empresa, String regime, String colaboradorContabil, String colaboradorRelacionamento,int status) {
+    private String empresa,regime,colaboradorContabil,colaboradorRelacionamento,email,responsavel;
+
+    public Demanda(int cod, int prioridadeContabil, int prioridadeRelacionamento, int status, String empresa, String regime, String colaboradorContabil, String colaboradorRelacionamento, String email, String responsavel) {
         this.cod = cod;
         this.prioridadeContabil = prioridadeContabil;
         this.prioridadeRelacionamento = prioridadeRelacionamento;
+        this.status = status;
         this.empresa = empresa;
         this.regime = regime;
         this.colaboradorContabil = colaboradorContabil;
         this.colaboradorRelacionamento = colaboradorRelacionamento;
-        this.status = status;
+        this.email = email;
+        this.responsavel = responsavel;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getResponsavel() {
+        return responsavel;
+    }
+
+    public void setResponsavel(String responsavel) {
+        this.responsavel = responsavel;
+    }
+    
     public Demanda() {
     }
 

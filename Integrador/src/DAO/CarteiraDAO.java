@@ -49,7 +49,7 @@ public class CarteiraDAO {
                 d.setEmpresa(rs.getString("DOC_EMPRESA"));
                 d.setRegime(rs.getString("DOC_REGIME"));
                 d.setPrioridadeRelacionamento(rs.getInt("DOC_PRIORIDADE_RELACIONAMENTO"));
-                d.setColaboradorContabil(rs.getString("DOC_COLABORADOR_CONTABIL"));
+                d.setColaboradorContabil("-----");
 
                 lista.add(d);
             }

@@ -20,9 +20,9 @@ import models.Demanda;
  * @author daniel.freitas
  */
 public class QuadroDAO {
-    private PreparedStatement stm;
-    private ResultSet rs;
-    private Connection con;
+    private  PreparedStatement stm;
+    private  ResultSet rs;
+    private static Connection con;
 
     public QuadroDAO() {
         try {
@@ -58,9 +58,13 @@ public class QuadroDAO {
                 + "'"+d.getEmpresa()+"',"
                 + "'"+d.getRegime()+"',"
                 + ""+d.getPrioridadeContabil()+","
-                + "'"+d.getColaboradorContabil()+"',"
                 + ""+d.getPrioridadeRelacionamento()+","
-                + "'"+d.getColaboradorRelacionamento()+"')";
+                + "'"+d.getColaboradorRelacionamento()+"',"
+                + ""+d.getStatus()+","
+                + "'"+d.getEmail()+"',"
+                + "'"+d.getResponsavel()+"'"
+                + ")";
+                
         try{
             stm = con.prepareStatement(sql);
             return !stm.execute();
