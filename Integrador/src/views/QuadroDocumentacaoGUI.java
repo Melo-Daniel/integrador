@@ -7,6 +7,7 @@ package views;
 
 import controllers.AdministradorCTRL;
 import controllers.CarteiraCTRL;
+import helpers.Suporte;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -20,9 +21,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -38,6 +43,11 @@ import models.Demanda;
  * @author daniel.freitas
  */
 public class QuadroDocumentacaoGUI extends JFrame {
+    private JMenuBar mbPrincipal;
+    private JMenu mnArquivos,mnAjuda,mnSair;
+    private JMenuItem miPerfil,miEmail;
+    
+    
     private Timer t = new Timer();
     private ArrayList<Demanda> lista = CarteiraCTRL.listarCarteita(nome);
     private JScrollPane scQuadro, scCarteira;
@@ -66,11 +76,31 @@ public class QuadroDocumentacaoGUI extends JFrame {
         setTitle("Quadro de Documentação");
         setBounds(0, 0, 600, 600);
         setLayout(null);
+        
+        
+        mbPrincipal = new JMenuBar();
+        setJMenuBar(mbPrincipal);
+        
+        mnArquivos = new JMenu("Principal");
+        mbPrincipal.add(mnArquivos);
+        
+        mnAjuda = new JMenu("Ajuda");
+        mbPrincipal.add(mnAjuda);
+        
+        mnSair = new JMenu("Sair");
+        mbPrincipal.add(mnSair);
 
-        lbLogo = new JLabel();
-        lbLogo.setBounds(0, 0, 90, 80);
-        lbLogo.setIcon(new ImageIcon("C:\\Users\\daniel.freitas\\Documents\\NetBeansProjects\\Conversor de Extratos\\src\\img\\logo.jpg"));
-        add(lbLogo);
+        
+        miPerfil = new JMenuItem("Perfil");
+        mnArquivos.add(miPerfil);
+        
+        miEmail = new JMenuItem("Gerenciar Emails");
+        mnArquivos.add(miEmail);
+        
+//      lbLogo = new JLabel();
+//      lbLogo.setBounds(0, 0, 90, 80);
+//      lbLogo.setIcon(new ImageIcon("C:\\Users\\daniel.freitas\\Documents\\NetBeansProjects\\Conversor de Extratos\\src\\img\\logo.jpg"));
+//      add(lbLogo);
 
         lbUsuario = new JLabel("Bem vinda " + nome);
         lbUsuario.setBounds(480, 10, 100, 25);
@@ -161,8 +191,14 @@ public class QuadroDocumentacaoGUI extends JFrame {
                     JOptionPane.showMessageDialog(null, "Selecione uma linha");
                 } else {
                     int cod = (int) tbCarteira.getValueAt(row, 0);
-                    CarteiraCTRL.marcarRecebido(cod,5,2017);
-                    listarCarteira(nome);
+                    
+                    if(Suporte.verificarArquivo(cod, String.valueOf(cbMes.getSelectedIndex()+1))){
+                        CarteiraCTRL.marcarRecebido(cod,cbMes.getSelectedIndex()+1,Integer.parseInt(tfAno.getText()));
+                        listarCarteira(nome);
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Não existem os arquivos necessários para a validação!");
+                    }
+                    
                 }
 
             }
@@ -205,7 +241,16 @@ public class QuadroDocumentacaoGUI extends JFrame {
                 pesquisar(tfPesquisa.getText());
             }
         });
+        
+        miEmail.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GerenciadorEmailGUI g = new GerenciadorEmailGUI(nome);
+                g.abrir();
+            }
+        });
     }
+    
     
     TimerTask task = new TimerTask() {
         @Override
@@ -218,10 +263,10 @@ public class QuadroDocumentacaoGUI extends JFrame {
     };
     
     public void start(){
-        t.scheduleAtFixedRate(task, 1000, 5000);
+        t.scheduleAtFixedRate(task, 1000, 10000);
     }
     public static void abrir() {
-        QuadroDocumentacaoGUI q = new QuadroDocumentacaoGUI("JOARLLA");
+        QuadroDocumentacaoGUI q = new QuadroDocumentacaoGUI(nome);
         q.setVisible(true);
         q.setLocationRelativeTo(null);
         q.setResizable(false);
