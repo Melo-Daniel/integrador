@@ -20,6 +20,14 @@ public class CarteiraCTRL {
     public static ArrayList<Demanda> listarCarteita(String nome) {
         return c.listarDemandas(nome);
     }
+    
+    public static ArrayList<Demanda> listarLucroReal(String nome) {
+        return c.listarLucroReal(nome);
+    }
+    
+    public static ArrayList<Demanda> listarRegime(String nome,String regime) {
+        return c.listarRegime(nome,regime);
+    }
 
     public static int getPresumidoSimples(String nome) {
         return c.getPresumidoSimples(nome);

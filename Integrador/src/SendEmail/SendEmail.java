@@ -51,11 +51,9 @@ public class SendEmail
 
             Transport.send(message);
             
-            JOptionPane.showMessageDialog(null,"Email sended!");
-            
         } catch (MessagingException e) 
         {
-            JOptionPane.showMessageDialog(null,"Something happened!");
+            JOptionPane.showMessageDialog(null,"Veish! Alguma coisa aconteceu!");
             
             throw new RuntimeException(e);
         }

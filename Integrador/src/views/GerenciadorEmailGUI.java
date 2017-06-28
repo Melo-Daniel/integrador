@@ -7,6 +7,7 @@ package views;
 
 import SendEmail.SendEmail;
 import controllers.CarteiraCTRL;
+import controllers.EmailCTRL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -18,6 +19,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -154,36 +156,26 @@ public class GerenciadorEmailGUI extends JFrame {
         btEnviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (chLucroReal.isSelected()) {
+                    ArrayList<Demanda> l = CarteiraCTRL.listarLucroReal(nome);
+                    System.out.println(l);
+                    if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l)) {
+                        JOptionPane.showMessageDialog(null, "Tudo certo");
+                    }else{
+                        JOptionPane.showMessageDialog(null, "hmmm, acho q n funfou");
+                    }
+                }
+                
+                if (chPresumido.isSelected()) {
+                    ArrayList<Demanda> l = CarteiraCTRL.listarRegime(nome,"L. PRESUMIDO");
+                    System.out.println(l);
+                    if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l)) {
+                        JOptionPane.showMessageDialog(null, "Tudo certo");
+                    }else{
+                        JOptionPane.showMessageDialog(null, "hmmm, acho q n funfou");
+                    }
+                }
 
-                String msg = "Prezado Cliente,\n"
-                        + "Você já organizou sua documentação contábil? São 15 documentos que você precisa nos enviar mensalmente.\n"
-                        + "Lembre-se: a documentação deve ser enviada no primeiro dia útil de cada mês para elaboramos suas demonstrações contábeis e apuramos seu imposto.\n"
-                        + "O que enviar?\n"
-                        + "1.	Extratos bancários em OFX e PDF\n"
-                        + "2.	Arquivo “contas pagas” (com a indicação do nome do fornecedor ou da despesa efetivamente paga)\n"
-                        + "3.	Posição do Estoque no último dia do mês\n"
-                        + "4.	Posição do Contas a receber no último dia do mês\n"
-                        + "5.	Posição do Contas a pagar no último dia do mês\n"
-                        + "6.	Despesas digitalizadas\n"
-                        + "7.	Relação de Notas canceladas, inutilizadas, devolvidas e transferidas\n"
-                        + "8.	Contas públicas (Energia, água, telefone)\n"
-                        + "9.	Notas de frete\n"
-                        + "10.	Recibos de Alugueis\n"
-                        + "11.	Notas dos serviços tomados\n"
-                        + "12.	SPED Fiscal (envio semanal)\n"
-                        + "13.	SPED Contribuições\n"
-                        + "14.	Arquivos XML’s das notas fiscais de entrada e saída\n"
-                        + "15.	Redução Z e memórias fiscais"
-                        + "\n\n"
-                        + "Arnaud Marcolino\n"
-                        + "ELITE Consultores do Brasil\n"
-                        + "Tel: 84 9 9108 8525  / 2020 7000\n"
-                        + "www.eliteconsultores.com.br";
-                SendEmail.send("danielfmelo21@gmail.com",
-                        "teste",
-                        msg,
-                        "daniel.melo42@outlook.com",
-                        "Dado201094");
             }
         });
     }

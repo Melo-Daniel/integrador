@@ -75,6 +75,31 @@ public class CarteiraDAO {
         }
         return cont;
     }
+    
+    public ArrayList<Demanda> listarRegime(String nome,String regime) {
+        ArrayList<Demanda> lista = new ArrayList<>();
+        
+        String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_COLABORADOR_RELACIONAMENTO = '" + nome + "' AND (DOC_REGIME = '"+regime+"')";
+        int cont = 0;
+        try {
+            stm = con.prepareStatement(query);
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+                Demanda d = new Demanda();
+                d.setCod(rs.getInt("DOC_COD"));
+                d.setEmpresa(rs.getString("DOC_EMPRESA"));
+                d.setEmail(rs.getString("DOC_EMAIL"));
+                d.setResponsavel(rs.getString("DOC_REPONSAVEL"));
+                d.setColaboradorRelacionamento(rs.getString("DOC_COLABORADOR_RELACIONAMENTO"));
+                lista.add(d);
+            }
+            return lista;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 
     public int getLucroReal(String nome) {
         String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_COLABORADOR_RELACIONAMENTO = '" + nome + "' AND (DOC_REGIME = 'LUCRO REAL')";
@@ -91,6 +116,31 @@ public class CarteiraDAO {
             ex.printStackTrace();
         }
         return cont;
+    }
+    
+    public ArrayList<Demanda> listarLucroReal(String nome) {
+        ArrayList<Demanda> lista = new ArrayList<>();
+        
+        String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_COLABORADOR_RELACIONAMENTO = '" + nome + "' AND (DOC_REGIME = 'LUCRO REAL')";
+        int cont = 0;
+        try {
+            stm = con.prepareStatement(query);
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+                Demanda d = new Demanda();
+                d.setCod(rs.getInt("DOC_COD"));
+                d.setEmpresa(rs.getString("DOC_EMPRESA"));
+                d.setEmail(rs.getString("DOC_EMAIL"));
+                d.setResponsavel(rs.getString("DOC_REPONSAVEL"));
+                d.setColaboradorRelacionamento(rs.getString("DOC_COLABORADOR_RELACIONAMENTO"));
+                lista.add(d);
+            }
+            return lista;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
     public int getRecebidoPresumidoSimples(String nome) {
         String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_COLABORADOR_RELACIONAMENTO = '" + nome + "' AND (DOC_REGIME = 'SIMPLES' OR DOC_REGIME = 'PRESUMIDO') AND DOC_STATUS = 2";
