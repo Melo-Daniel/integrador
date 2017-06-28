@@ -48,6 +48,10 @@ public class CarteiraCTRL {
     public static int getStatus(int cod,int mes,int ano) {
         return c.getStatus(cod,mes,ano);
     }
+    
+    public static int getEmailStatus(int cod,int mes,int ano) {
+        return c.getEmailStatus(cod,mes,ano);
+    }
 
     public static boolean marcarRecebido(int cod,int mes,int ano) {
         return c.marcarRecebida(cod, mes, ano);

@@ -90,6 +90,7 @@ public class CarteiraDAO {
                 d.setCod(rs.getInt("DOC_COD"));
                 d.setEmpresa(rs.getString("DOC_EMPRESA"));
                 d.setEmail(rs.getString("DOC_EMAIL"));
+                d.setRegime(rs.getString("DOC_REGIME"));
                 d.setResponsavel(rs.getString("DOC_REPONSAVEL"));
                 d.setColaboradorRelacionamento(rs.getString("DOC_COLABORADOR_RELACIONAMENTO"));
                 lista.add(d);
@@ -132,6 +133,7 @@ public class CarteiraDAO {
                 d.setCod(rs.getInt("DOC_COD"));
                 d.setEmpresa(rs.getString("DOC_EMPRESA"));
                 d.setEmail(rs.getString("DOC_EMAIL"));
+                d.setRegime(rs.getString("DOC_REGIME"));
                 d.setResponsavel(rs.getString("DOC_REPONSAVEL"));
                 d.setColaboradorRelacionamento(rs.getString("DOC_COLABORADOR_RELACIONAMENTO"));
                 lista.add(d);
@@ -187,6 +189,25 @@ public class CarteiraDAO {
             rs = stm.executeQuery();
             while (rs.next()) {
                 codigo = rs.getInt("RAR_STATUS");
+            }
+            return codigo;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public int getEmailStatus(int cod,int mes,int ano) {
+        String query = "SELECT EMA_STATUS FROM TB_EMAILS_ENVIADOS WHERE EMA_DOC_COD = ? AND EMA_MES = ? AND EMA_ANO = ?";
+        int codigo = 0;
+        try {
+            stm = con.prepareStatement(query);  
+            stm.setInt(1, cod);
+            stm.setInt(2, mes);
+            stm.setInt(3, ano);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                codigo = rs.getInt("EMA_STATUS");
             }
             return codigo;
         } catch (SQLException ex) {

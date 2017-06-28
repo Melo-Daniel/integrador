@@ -81,7 +81,7 @@ public class QuadroDocumentacaoGUI extends JFrame {
         mbPrincipal = new JMenuBar();
         setJMenuBar(mbPrincipal);
         
-        mnArquivos = new JMenu("Principal");
+        mnArquivos = new JMenu("Email");
         mbPrincipal.add(mnArquivos);
         
         mnAjuda = new JMenu("Ajuda");
@@ -91,10 +91,10 @@ public class QuadroDocumentacaoGUI extends JFrame {
         mbPrincipal.add(mnSair);
 
         
-        miPerfil = new JMenuItem("Perfil");
+        miPerfil = new JMenuItem("Geral");
         mnArquivos.add(miPerfil);
         
-        miEmail = new JMenuItem("Gerenciar Emails");
+        miEmail = new JMenuItem("Pendentes");
         mnArquivos.add(miEmail);
         
 //      lbLogo = new JLabel();

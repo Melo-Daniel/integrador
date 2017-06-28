@@ -8,6 +8,8 @@ package views;
 import SendEmail.SendEmail;
 import controllers.CarteiraCTRL;
 import controllers.EmailCTRL;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -25,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import models.Demanda;
 
@@ -57,6 +60,7 @@ public class GerenciadorEmailGUI extends JFrame {
         definirEventos();
         this.nome = nome;
         listarCarteira(nome);
+        atualizarLista();
     }
 
     private void inicializarComponentes() {
@@ -146,6 +150,13 @@ public class GerenciadorEmailGUI extends JFrame {
     }
 
     private void definirEventos() {
+        cbMes.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                listarCarteira(nome);
+            }
+        });
+        
         chTodos.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -169,13 +180,24 @@ public class GerenciadorEmailGUI extends JFrame {
                 if (chPresumido.isSelected()) {
                     ArrayList<Demanda> l = CarteiraCTRL.listarRegime(nome,"L. PRESUMIDO");
                     System.out.println(l);
+                    
                     if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l)) {
                         JOptionPane.showMessageDialog(null, "Tudo certo");
                     }else{
-                        JOptionPane.showMessageDialog(null, "hmmm, acho q n funfou");
+                        JOptionPane.showMessageDialog(null, "Os emails não foram disparados, provavelmente já foram enviados");
                     }
                 }
-
+                
+                if (chSimples.isSelected()) {
+                    ArrayList<Demanda> l = CarteiraCTRL.listarRegime(nome,"SIMPLES");
+                    System.out.println(l);
+                    
+                    if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l)) {
+                        JOptionPane.showMessageDialog(null, "Os emails foram enviados com muito sucesso!");
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Os emails não foram disparados, provavelmente já foram enviados");
+                    }
+                }
             }
         });
     }
@@ -214,5 +236,31 @@ public class GerenciadorEmailGUI extends JFrame {
                 d.getColaboradorContabil()
             });
         }
+    }
+    public void atualizarLista() {
+        
+        Color vermelho = new Color(255, 204, 204);
+        Color amarelo = new Color(255, 255, 128);
+        Color verde = new Color(179, 255, 217);
+        tbCarteira.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                setHorizontalAlignment(JLabel.CENTER);
+                table.getColumnModel().getColumn(0).setCellRenderer(this);
+                table.getColumnModel().getColumn(1).setCellRenderer(this);
+                table.getColumnModel().getColumn(2).setCellRenderer(this);
+                int cod = (int) table.getModel().getValueAt(row, 0);
+
+                int status = CarteiraCTRL.getEmailStatus(cod,cbMes.getSelectedIndex()+1,Integer.parseInt(tfAno.getText()));
+                if(status == 2){
+                    c.setBackground(amarelo);
+                }else{
+                    c.setBackground(vermelho);
+                }
+
+                return c;
+            }
+        });
     }
 }
