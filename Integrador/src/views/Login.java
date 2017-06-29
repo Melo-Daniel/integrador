@@ -82,6 +82,7 @@ public class Login extends JFrame {
                 if (ColaboradorCTRL.Logar(tfNome.getText(), pfSenha.getText())) {
                     new QuadroDocumentacaoGUI(tfNome.getText()).abrir();
                     
+                    dispose();
                 }else{
                     JOptionPane.showMessageDialog(null, "Nome e/ou sennha incorreto(s)","Erro ao Logar",0);
                 }
@@ -94,6 +95,7 @@ public class Login extends JFrame {
         l.setVisible(true);
         l.setLocationRelativeTo(null);
         l.setResizable(false);
+        
         l.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 

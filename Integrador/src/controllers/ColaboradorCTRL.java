@@ -6,6 +6,7 @@
 package controllers;
 
 import DAO.ColaboradorDAO;
+import models.Colaborador;
 
 /**
  *
@@ -17,5 +18,8 @@ public class ColaboradorCTRL {
     
     public static boolean Logar(String nome,String senha){
         return c.Login(nome, senha);
+    }
+    public static Colaborador getColaborador(String nome){
+        return c.getColaborador(nome);
     }
 }

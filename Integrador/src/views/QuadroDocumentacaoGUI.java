@@ -10,6 +10,7 @@ import controllers.CarteiraCTRL;
 import helpers.Suporte;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -43,21 +44,25 @@ import models.Demanda;
  * @author daniel.freitas
  */
 public class QuadroDocumentacaoGUI extends JFrame {
+
     private JMenuBar mbPrincipal;
-    private JMenu mnArquivos,mnAjuda,mnSair;
-    private JMenuItem miPerfil,miEmail;
-    
-    
+    private JMenu mnArquivos, mnAjuda, mnSair;
+    private JMenuItem miPerfil, miEmail, miPendente;
+
     private Timer t = new Timer();
     private ArrayList<Demanda> lista = CarteiraCTRL.listarCarteita(nome);
     private JScrollPane scQuadro, scCarteira;
     private JTable tbQuadro, tbCarteira;
     private DefaultTableModel dm, dmCarteira;
     private static String nome;
-    private JLabel lbPs, lbLr, lbRecebidoPs, lbRecebidoLr, lbImportado, lbLogo, lbUsuario;
+    private JLabel lbPs, lbLr, lbRecebidoPs, lbRecebidoLr, lbImportado, lbLogo, lbUsuario, lbAzul, lbVermelho, lbVerde;
     private JButton btMarcar, btDesmarcar;
     private JComboBox cbMes;
-    private JTextField tfAno,tfPesquisa;
+    private JTextField tfAno, tfPesquisa;
+    private Color azulescuro = new Color(0, 82, 102);
+    Color vermelho = new Color(255, 102, 102);
+    Color azul = new Color(128, 229, 255);
+    Color verde = new Color(77, 255, 77);
 
     public QuadroDocumentacaoGUI(String nome) {
         try {
@@ -74,38 +79,39 @@ public class QuadroDocumentacaoGUI extends JFrame {
 
     private void inicializarComponentes() {
         setTitle("Quadro de Documentação");
-        setBounds(0, 0, 600, 600);
+        setBounds(0, 0, 595, 750);
         setLayout(null);
-        
-        
+        getContentPane().setBackground(Color.white);
+
         mbPrincipal = new JMenuBar();
         setJMenuBar(mbPrincipal);
-        
+
         mnArquivos = new JMenu("Email");
         mbPrincipal.add(mnArquivos);
-        
+
         mnAjuda = new JMenu("Ajuda");
         mbPrincipal.add(mnAjuda);
-        
+
         mnSair = new JMenu("Sair");
         mbPrincipal.add(mnSair);
 
-        
-        miPerfil = new JMenuItem("Geral");
+        miPerfil = new JMenuItem("Perfil");
         mnArquivos.add(miPerfil);
-        
-        miEmail = new JMenuItem("Pendentes");
+
+        miEmail = new JMenuItem("Geral");
         mnArquivos.add(miEmail);
-        
+
+        miPendente = new JMenuItem("Pendente");
+        mnArquivos.add(miPendente);
+
 //      lbLogo = new JLabel();
 //      lbLogo.setBounds(0, 0, 90, 80);
 //      lbLogo.setIcon(new ImageIcon("C:\\Users\\daniel.freitas\\Documents\\NetBeansProjects\\Conversor de Extratos\\src\\img\\logo.jpg"));
 //      add(lbLogo);
-
         lbUsuario = new JLabel("Bem vinda " + nome);
         lbUsuario.setBounds(480, 10, 100, 25);
         add(lbUsuario);
-        
+
         Object[] meses = {
             "Janeiro",
             "Fevereiro",
@@ -119,16 +125,16 @@ public class QuadroDocumentacaoGUI extends JFrame {
             "Outubro",
             "Novembro",
             "Dezembro"};
-        
+
         cbMes = new JComboBox(meses);
         cbMes.setBounds(480, 40, 100, 25);
         cbMes.setSelectedIndex(4);
         add(cbMes);
-        
+
         tfAno = new JTextField("2017");
-        tfAno.setBounds(480,70,100,25);
+        tfAno.setBounds(480, 70, 100, 25);
         add(tfAno);
-        
+
         lbPs = new JLabel("Presumido & Simples: " + CarteiraCTRL.getPresumidoSimples(nome));
         lbPs.setBounds(10, 100, 150, 25);
         add(lbPs);
@@ -136,21 +142,24 @@ public class QuadroDocumentacaoGUI extends JFrame {
         lbLr = new JLabel("Lucro Real: " + CarteiraCTRL.getLucroReal(nome));
         lbLr.setBounds(10, 130, 150, 25);
         add(lbLr);
+        int rec = CarteiraCTRL.getRecebido(nome, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), "SIMPLES") + CarteiraCTRL.getRecebido(nome, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), "L. PRESUMIDO");
 
-        lbRecebidoPs = new JLabel("Recebido Presumido & Simples: "+CarteiraCTRL.getRecebidoPresumidoSimples(nome));
+        lbRecebidoPs = new JLabel("Recebido Presumido & Simples: " + rec);
         lbRecebidoPs.setBounds(10, 160, 200, 25);
         add(lbRecebidoPs);
 
-        lbRecebidoLr = new JLabel("Recebido Lucro Real: "+CarteiraCTRL.getRecebidoLucroReal(nome));
+        lbRecebidoLr = new JLabel("Recebido Lucro Real: " + CarteiraCTRL.getRecebido(nome, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), "LUCRO REAL"));
         lbRecebidoLr.setBounds(10, 190, 200, 25);
         add(lbRecebidoLr);
 
-        lbImportado = new JLabel("Importados: ");
-        lbImportado.setBounds(480, 100, 200, 25);
+        lbImportado = new JLabel("" + CarteiraCTRL.getImpAmount(nome, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText())));
+        lbImportado.setBounds(520, 140, 200, 50);
+        lbImportado.setFont(new Font("Arial", Font.BOLD, 45));
+        lbImportado.setForeground(azulescuro);
         add(lbImportado);
-        
+
         tfPesquisa = new JTextField();
-        tfPesquisa.setBounds(10,230,200,25);
+        tfPesquisa.setBounds(10, 230, 200, 25);
         add(tfPesquisa);
 
         btMarcar = new JButton("Rebebido");
@@ -179,6 +188,22 @@ public class QuadroDocumentacaoGUI extends JFrame {
 
         scCarteira.setViewportView(tbCarteira);
         add(scCarteira);
+        
+        
+        lbVermelho = new JLabel("Pendente");
+        lbVermelho.setBounds(10, 580, 100, 20);
+        lbVermelho.setForeground(vermelho);
+        add(lbVermelho);
+        
+        lbAzul = new JLabel("Recebido");
+        lbAzul.setBounds(10, 595, 100, 20);
+        lbAzul.setForeground(azul);
+        add(lbAzul);
+        
+        lbVerde = new JLabel("Importado");
+        lbVerde.setBounds(10, 610, 100, 20);
+        lbVerde.setForeground(verde);
+        add(lbVerde);
     }
 
     private void definirEventos() {
@@ -191,19 +216,27 @@ public class QuadroDocumentacaoGUI extends JFrame {
                     JOptionPane.showMessageDialog(null, "Selecione uma linha");
                 } else {
                     int cod = (int) tbCarteira.getValueAt(row, 0);
-                    
-                    if(Suporte.verificarArquivo(cod, String.valueOf(cbMes.getSelectedIndex()+1))){
-                        CarteiraCTRL.marcarRecebido(cod,cbMes.getSelectedIndex()+1,Integer.parseInt(tfAno.getText()));
+
+                    if (Suporte.verificarArquivo(cod, String.valueOf(cbMes.getSelectedIndex() + 1))) {
+                        CarteiraCTRL.marcarRecebido(cod, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()));
                         listarCarteira(nome);
-                    }else{
-                        JOptionPane.showMessageDialog(null, "Não existem os arquivos necessários para a validação!");
+                        atualizarResultados();
+                    } else {
+                        int resp = JOptionPane.showConfirmDialog(null, "Não existem os arquivos necessários para a validação!\n"
+                                + "Tem certeza que deseja marcar como recebida?");
+                        if (resp == 0) {
+                            CarteiraCTRL.marcarRecebido(cod, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()));
+                            listarCarteira(nome);
+                            atualizarResultados();
+                        }
+                        System.out.println(resp);
                     }
-                    
+
                 }
 
             }
         });
-        
+
         btDesmarcar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -217,23 +250,23 @@ public class QuadroDocumentacaoGUI extends JFrame {
                 }
             }
         });
-        
+
         cbMes.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 listarCarteira(nome);
             }
         });
-        
+
         tfPesquisa.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                
+
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-                
+
             }
 
             @Override
@@ -241,7 +274,7 @@ public class QuadroDocumentacaoGUI extends JFrame {
                 pesquisar(tfPesquisa.getText());
             }
         });
-        
+
         miEmail.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -249,22 +282,37 @@ public class QuadroDocumentacaoGUI extends JFrame {
                 g.abrir();
             }
         });
+
+        miPerfil.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new PerfilGUI(nome).abrir(nome);
+            }
+        });
+
+        miPendente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new EmailPendenteGUI().abrir();
+            }
+        });
     }
-    
-    
+
     TimerTask task = new TimerTask() {
         @Override
         public void run() {
-            if(tfPesquisa.getText().equals("")){
+            if (tfPesquisa.getText().equals("")) {
                 listarCarteira(nome);
+                atualizarResultados();
             }
-            
+
         }
     };
-    
-    public void start(){
+
+    public void start() {
         t.scheduleAtFixedRate(task, 1000, 10000);
     }
+
     public static void abrir() {
         QuadroDocumentacaoGUI q = new QuadroDocumentacaoGUI(nome);
         q.setVisible(true);
@@ -289,9 +337,7 @@ public class QuadroDocumentacaoGUI extends JFrame {
     }
 
     public void atualizarLista() {
-        Color vermelho = new Color(255, 204, 204);
-        Color amarelo = new Color(255, 255, 128);
-        Color verde = new Color(179, 255, 217);
+
         tbCarteira.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -303,12 +349,12 @@ public class QuadroDocumentacaoGUI extends JFrame {
                 table.getColumnModel().getColumn(3).setCellRenderer(this);
                 int cod = (int) table.getModel().getValueAt(row, 0);
 
-                int status = CarteiraCTRL.getStatus(cod,cbMes.getSelectedIndex()+1,Integer.parseInt(tfAno.getText()));
+                int status = CarteiraCTRL.getStatus(cod, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()));
                 if (status == 3) {
                     c.setBackground(verde);
-                } else if(status == 2){
-                    c.setBackground(amarelo);
-                }else{
+                } else if (status == 2) {
+                    c.setBackground(azul);
+                } else {
                     c.setBackground(vermelho);
                 }
 
@@ -316,7 +362,7 @@ public class QuadroDocumentacaoGUI extends JFrame {
             }
         });
     }
-    
+
     public void pesquisar(String txt) {
         dmCarteira.setRowCount(0);
         for (Demanda d : CarteiraCTRL.pesquisa(txt, lista)) {
@@ -329,5 +375,15 @@ public class QuadroDocumentacaoGUI extends JFrame {
                 d.getColaboradorRelacionamento()
             });
         }
+    }
+
+    public void atualizarResultados() {
+        int mes = cbMes.getSelectedIndex() + 1;
+        int ano = Integer.parseInt(tfAno.getText());
+
+        int ps = CarteiraCTRL.getRecebido(nome, mes, ano, "SIMPLES") + CarteiraCTRL.getRecebido(nome, mes, ano, "L. PRESUMIDO");
+        lbImportado.setText(String.valueOf(CarteiraCTRL.getImpAmount(nome, mes, ano)));
+        lbRecebidoLr.setText("Recebido Lucro Real: " + (CarteiraCTRL.getRecebido(nome, mes, ano, "LUCRO REAL")));
+        lbRecebidoPs.setText("Recebido Presumido & Simples: " + (ps));
     }
 }

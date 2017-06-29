@@ -9,6 +9,7 @@ import DAO.CarteiraDAO;
 import DAO.EmailDAO;
 import SendEmail.SendEmail;
 import helpers.LucroRealMSG;
+import helpers.PresumidoSimplesMSG;
 import java.util.ArrayList;
 import models.Demanda;
 
@@ -29,10 +30,12 @@ public class EmailCTRL {
                 String msg = "";
                 if(d.getRegime().equals("LUCRO REAL")){
                     msg = new LucroRealMSG(d.getResponsavel()).gerarMsg();
+                }else{
+                    msg = new PresumidoSimplesMSG(d.getResponsavel()).gerarMsg();
                 }
                 
                 SendEmail.send(d.getEmail(),
-                        "Documents - "+ d.getEmpresa(),
+                        "Documentos - "+ d.getEmpresa(),
                         msg,
                         "daniel.melo42@outlook.com",
                         "Dado201094");
@@ -44,7 +47,7 @@ public class EmailCTRL {
             }
 
         }
-        if (i == list.size()) {
+        if (i > 0) {
             return true;
         }
         return false;

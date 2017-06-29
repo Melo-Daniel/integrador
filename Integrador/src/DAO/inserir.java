@@ -6,6 +6,7 @@
 package DAO;
 
 import controllers.CarteiraCTRL;
+import controllers.ColaboradorCTRL;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import models.Colaborador;
 import models.Demanda;
 
 /**
@@ -38,12 +40,7 @@ public class inserir {
 //            new QuadroDAO().inserir(d);
 //        }
 
-        ArrayList<Demanda> lista = CarteiraCTRL.listarRegime("PEDRITA","LUCRO REAL");
-        System.out.println(lista);
-        for(Demanda d : lista){
-            System.out.println(d.getEmail());
-            
-        }
-        System.out.println(lista.size());
+    Colaborador c = ColaboradorCTRL.getColaborador("PEDRITA");
+        System.out.println(c.getNome());
     }
 }

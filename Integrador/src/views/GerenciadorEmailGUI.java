@@ -240,7 +240,7 @@ public class GerenciadorEmailGUI extends JFrame {
     public void atualizarLista() {
         
         Color vermelho = new Color(255, 204, 204);
-        Color amarelo = new Color(255, 255, 128);
+        Color azul = new Color(128, 229, 255);
         Color verde = new Color(179, 255, 217);
         tbCarteira.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -254,7 +254,7 @@ public class GerenciadorEmailGUI extends JFrame {
 
                 int status = CarteiraCTRL.getEmailStatus(cod,cbMes.getSelectedIndex()+1,Integer.parseInt(tfAno.getText()));
                 if(status == 2){
-                    c.setBackground(amarelo);
+                    c.setBackground(azul);
                 }else{
                     c.setBackground(vermelho);
                 }

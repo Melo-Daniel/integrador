@@ -17,7 +17,8 @@ import models.Demanda;
  * @author daniel.freitas
  */
 public class AdministradorDAO {
-        private PreparedStatement stm;
+
+    private PreparedStatement stm;
     private ResultSet rs;
     private Connection con;
 
@@ -28,8 +29,8 @@ public class AdministradorDAO {
             ex.printStackTrace();
         }
     }
-    
-        public ArrayList<Demanda> listar() {
+
+    public ArrayList<Demanda> listar() {
         ArrayList<Demanda> lista = new ArrayList<>();
 
         String query = "SELECT * FROM TB_DOCUMENTACAO";
@@ -47,7 +48,7 @@ public class AdministradorDAO {
                 d.setEmpresa(rs.getString("DOC_EMPRESA"));
                 d.setRegime(rs.getString("DOC_REGIME"));
                 d.setPrioridadeRelacionamento(rs.getInt("DOC_PRIORIDADE_RELACIONAMENTO"));
-                d.setColaboradorContabil(rs.getString("DOC_COLABORADOR_CONTABIL"));
+
                 d.setColaboradorRelacionamento(rs.getString("DOC_COLABORADOR_RELACIONAMENTO"));
                 lista.add(d);
             }
@@ -56,16 +57,17 @@ public class AdministradorDAO {
         }
         return lista;
     }
-    public boolean marcarImportada(int cod,int mes,int ano) {
+
+    public boolean marcarImportada(int cod, int mes, int ano) {
         String query = "UPDATE TB_RECEBIMENTO_ARQUIVOS SET RAR_STATUS = 3 WHERE RAR_DOC_COD = ? AND RAR_MES = ? AND RAR_ANO = ?";
 
         try {
             stm = con.prepareStatement(query);
-            
+
             stm.setInt(1, cod);
             stm.setInt(2, mes);
             stm.setInt(3, ano);
-            
+
             return !stm.execute();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -106,8 +108,8 @@ public class AdministradorDAO {
         }
         return cont;
     }
-    
-        public int getRecebidoPresumidoSimplesAdm() {
+
+    public int getRecebidoPresumidoSimplesAdm() {
         String query = "SELECT * FROM TB_DOCUMENTACAO WHERE (DOC_REGIME = 'SIMPLES' OR DOC_REGIME = 'PRESUMIDO') AND DOC_STATUS = 2";
         int cont = 0;
         try {
@@ -140,7 +142,7 @@ public class AdministradorDAO {
         }
         return cont;
     }
-    
+
     public int getImportadoGeral() {
         String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_STATUS = 3";
         int cont = 0;

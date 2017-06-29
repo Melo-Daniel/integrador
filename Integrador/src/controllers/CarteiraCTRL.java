@@ -21,6 +21,10 @@ public class CarteiraCTRL {
         return c.listarDemandas(nome);
     }
     
+    public static Demanda getEmpresaCodigo(String nome, int cod) {
+        return c.getEmpresaCodigo(nome, cod);
+    }
+    
     public static ArrayList<Demanda> listarLucroReal(String nome) {
         return c.listarLucroReal(nome);
     }
@@ -37,8 +41,8 @@ public class CarteiraCTRL {
         return c.getLucroReal(nome);
     }
 
-    public static int getRecebidoPresumidoSimples(String nome) {
-        return c.getRecebidoPresumidoSimples(nome);
+    public static int getRecebido(String nome,int mes,int ano,String regime) {
+        return c.getRecebido(nome, mes, ano, regime);
     }
 
     public static int getRecebidoLucroReal(String nome) {
@@ -69,5 +73,9 @@ public class CarteiraCTRL {
             }
         }
         return lista;
+    }
+    
+    public static int getImpAmount(String nome,int mes,int ano){
+        return c.getImpAmount(nome, mes, ano);
     }
 }

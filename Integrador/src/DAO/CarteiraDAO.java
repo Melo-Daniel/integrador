@@ -58,6 +58,32 @@ public class CarteiraDAO {
         }
         return lista;
     }
+    
+    public Demanda getEmpresaCodigo(String nome, int cod) {
+        Demanda d = new Demanda();
+
+        String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_COLABORADOR_RELACIONAMENTO = '" + nome + "' AND DOC_COD = "+cod;
+
+        try {
+            stm = con.prepareStatement(query);
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+                
+                d.setCod(rs.getInt("DOC_COD"));
+                d.setStatus(rs.getInt("DOC_STATUS"));
+                d.setEmpresa(rs.getString("DOC_EMPRESA"));
+                d.setRegime(rs.getString("DOC_REGIME"));
+                d.setEmail(rs.getString("DOC_EMAIL"));
+                d.setResponsavel(rs.getString("DOC_RESPONSAVEL"));
+                d.setPrioridadeRelacionamento(rs.getInt("DOC_PRIORIDADE_RELACIONAMENTO"));
+                d.setColaboradorContabil("-----");
+            }
+        } catch (SQLException ex) {
+            ex.getMessage();
+        }
+        return d;
+    }
 
     public int getPresumidoSimples(String nome) {
         String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_COLABORADOR_RELACIONAMENTO = '" + nome + "' AND (DOC_REGIME = 'SIMPLES' OR DOC_REGIME = 'PRESUMIDO')";
@@ -144,11 +170,20 @@ public class CarteiraDAO {
         }
         return null;
     }
-    public int getRecebidoPresumidoSimples(String nome) {
-        String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_COLABORADOR_RELACIONAMENTO = '" + nome + "' AND (DOC_REGIME = 'SIMPLES' OR DOC_REGIME = 'PRESUMIDO') AND DOC_STATUS = 2";
+    public int getRecebido(String nome,int mes,int ano,String regime) {
+        String query = "SELECT DISTINCT(RAR_DOC_COD),DOC_EMPRESA \n" +
+"	FROM TB_RECEBIMENTO_ARQUIVOS \n" +
+"		JOIN TB_DOCUMENTACAO \n" +
+"		ON(RAR_DOC_COD = DOC_COD) \n" +
+"	WHERE RAR_STATUS = 2 AND \n" +
+"		DOC_COLABORADOR_RELACIONAMENTO = '"+nome+"' AND\n" +
+"		 RAR_MES = "+mes+" AND \n" +
+"		 RAR_ANO = "+ano+" AND \n" +
+"		 DOC_REGIME = '"+regime+"'";
         int cont = 0;
         try {
             stm = con.prepareStatement(query);
+            
             rs = stm.executeQuery();
 
             while (rs.next()) {
@@ -269,5 +304,31 @@ public class CarteiraDAO {
         
         Demanda[] d = new Demanda[12];
         return false;
+    }
+    
+    public int getImpAmount(String nome,int mes,int ano){
+        String query = "SELECT DISTINCT(RAR_DOC_COD),DOC_EMPRESA \n" +
+"	FROM TB_RECEBIMENTO_ARQUIVOS \n" +
+"		JOIN TB_DOCUMENTACAO \n" +
+"		ON(RAR_DOC_COD = DOC_COD) \n" +
+"	WHERE RAR_STATUS = 3 AND \n" +
+"		DOC_COLABORADOR_RELACIONAMENTO = '"+nome+"' AND\n" +
+"		 RAR_MES = "+mes+" AND \n" +
+"		 RAR_ANO = "+ano+"";
+        
+        try {
+            stm = con.prepareStatement(query);
+            
+            rs = stm.executeQuery();
+            int i = 0;
+            while(rs.next()){
+                i++;
+            }
+            return i;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        
+        return 0;
     }
 }
