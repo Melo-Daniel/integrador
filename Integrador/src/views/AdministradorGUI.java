@@ -9,6 +9,7 @@ import controllers.AdministradorCTRL;
 import controllers.CarteiraCTRL;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -18,6 +19,7 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -43,8 +45,13 @@ public class AdministradorGUI extends JFrame {
     private JButton btMarcar, btDesmarcar;
     private JTextField tfPesquisa,tfAno;
     private JComboBox cbMes;
-    private JLabel lbPs, lbLr, lbRecebidoPs, lbRecebidoLr, lbImportado, lbLogo, lbUsuario;
+    private JLabel lbPs,lbAzul,lbVermelho,lbVerde, lbLr, lbRecebidoPs, lbRecebidoLr, lbImportado, lbLogo, lbUsuario;
     private ArrayList<Demanda> lista = AdministradorCTRL.listar();
+    Color vermelho = new Color(255, 102, 102);
+    Color azul = new Color(128, 229, 255);
+    Color verde = new Color(77, 255, 77);
+    Color azulescuro = new Color(0, 82, 102);
+    
     public AdministradorGUI() {
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -60,8 +67,13 @@ public class AdministradorGUI extends JFrame {
 
     private void inicializarComponentes() {
         setTitle("Administrador");
-        setBounds(0, 0, 700, 600);
+        setBounds(0, 0, 700, 640);
         setLayout(null);
+        
+        lbLogo = new JLabel();
+        lbLogo.setBounds(0, 0, 90, 80);
+        lbLogo.setIcon(new ImageIcon("C:\\Users\\daniel.freitas\\Documents\\NetBeansProjects\\Conversor de Extratos\\src\\img\\logo.jpg"));
+        add(lbLogo);
         
         Object[] meses = {
             "Janeiro",
@@ -102,8 +114,10 @@ public class AdministradorGUI extends JFrame {
         lbRecebidoLr.setBounds(10, 190, 200, 25);
         add(lbRecebidoLr);
 
-        lbImportado = new JLabel("Importados: "+AdministradorCTRL.getImportadoGeral());
-        lbImportado.setBounds(580, 100, 200, 25);
+        lbImportado = new JLabel("" + AdministradorCTRL.getImpAmount(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText())));
+        lbImportado.setBounds(600, 140, 200, 50);
+        lbImportado.setFont(new Font("Arial", Font.BOLD, 45));
+        lbImportado.setForeground(azulescuro);
         add(lbImportado);
         
         tfPesquisa = new JTextField();
@@ -136,6 +150,24 @@ public class AdministradorGUI extends JFrame {
 
         scQuadro.setViewportView(tbQuadro);
         add(scQuadro);
+        
+        lbVermelho = new JLabel("Pendente");
+        lbVermelho.setBounds(10, 580, 100, 20);
+        lbVermelho.setForeground(vermelho);
+        lbVermelho.setFont(new Font("Arial", Font.BOLD, 13));
+        add(lbVermelho);
+
+        lbAzul = new JLabel("Recebido");
+        lbAzul.setBounds(100, 580, 100, 20);
+        lbAzul.setForeground(azul);
+        lbAzul.setFont(new Font("Arial", Font.BOLD, 13));
+        add(lbAzul);
+
+        lbVerde = new JLabel("Importado");
+        lbVerde.setBounds(205, 580, 100, 20);
+        lbVerde.setForeground(verde);
+        lbVerde.setFont(new Font("Arial", Font.BOLD, 13));
+        add(lbVerde);
     }
 
     private void definirEventos() {
@@ -189,7 +221,7 @@ public class AdministradorGUI extends JFrame {
     }
     
     public void start(){
-        t.scheduleAtFixedRate(task, 1000, 5000);
+        t.scheduleAtFixedRate(task, 10000, 10000);
     }
     TimerTask task = new TimerTask() {
         @Override
@@ -229,9 +261,7 @@ public class AdministradorGUI extends JFrame {
     }
 
     public void atualizarLista() {
-        Color vermelho = new Color(255, 204, 204);
-        Color amarelo = new Color(255, 255, 128);
-        Color verde = new Color(179, 255, 217);
+        
         tbQuadro.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -247,7 +277,7 @@ public class AdministradorGUI extends JFrame {
                 if (status == 3) {
                     c.setBackground(verde);
                 } else if (status == 2) {
-                    c.setBackground(amarelo);
+                    c.setBackground(azul);
                 } else {
                     c.setBackground(vermelho);
                 }

@@ -5,6 +5,7 @@
  */
 package DAO;
 
+import controllers.ColaboradorCTRL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -69,5 +70,26 @@ public class ColaboradorDAO {
             ex.printStackTrace();
         }
         return c;
+    }
+    
+    public boolean atualizarDados(String senha,String email,String emailsenha){
+        Colaborador c2 = new Colaborador();
+        
+        String query = "UPDATE TB_COLABORADORES "
+                + "SET COL_SENHA = '"+senha+"',"
+                + " COL_EMAIL = '"+email+"',"
+                + " COL_EMAIL_SENHA = '"+emailsenha+"'"
+                + " WHERE COL_NOME = '"+ColaboradorCTRL.getUsuariologado()+"'";
+        try {
+            
+            stm = con.prepareStatement(query);
+            
+            return !stm.execute();
+            
+        } catch (SQLException ex) {
+            System.out.println("Erro: "+ex.getMessage());
+        }
+        
+        return false;
     }
 }

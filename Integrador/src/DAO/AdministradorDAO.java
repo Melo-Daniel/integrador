@@ -59,7 +59,7 @@ public class AdministradorDAO {
     }
 
     public boolean marcarImportada(int cod, int mes, int ano) {
-        String query = "UPDATE TB_RECEBIMENTO_ARQUIVOS SET RAR_STATUS = 3 WHERE RAR_DOC_COD = ? AND RAR_MES = ? AND RAR_ANO = ?";
+        String query = "INSERT TB_RECEBIMENTO_ARQUIVOS VALUES (?,?,?,3)";
 
         try {
             stm = con.prepareStatement(query);
@@ -158,5 +158,30 @@ public class AdministradorDAO {
             ex.printStackTrace();
         }
         return cont;
+    }
+
+    public int getImpAmount(int mes, int ano) {
+        String query = "SELECT DISTINCT(RAR_DOC_COD),DOC_EMPRESA \n"
+                + "	FROM TB_RECEBIMENTO_ARQUIVOS \n"
+                + "		JOIN TB_DOCUMENTACAO \n"
+                + "		ON(RAR_DOC_COD = DOC_COD) \n"
+                + "	WHERE RAR_STATUS = 3 AND \n"
+                + "		 RAR_MES = " + mes + " AND \n"
+                + "		 RAR_ANO = " + ano + "";
+
+        try {
+            stm = con.prepareStatement(query);
+
+            rs = stm.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+                i++;
+            }
+            return i;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return 0;
     }
 }

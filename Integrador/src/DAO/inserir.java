@@ -41,6 +41,6 @@ public class inserir {
 //        }
 
     Colaborador c = ColaboradorCTRL.getColaborador("PEDRITA");
-        System.out.println(c.getNome());
+        System.out.println(c.getSenhaEmail());
     }
 }

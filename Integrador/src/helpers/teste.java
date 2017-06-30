@@ -5,13 +5,25 @@
  */
 package helpers;
 
-/**
- *
- * @author daniel.freitas
- */
-public class teste {
-    public static void main(String[] args) {
-        Suporte.listarExtatos(447,5,2017);
-        //System.out.println(Suporte.formatCodigo(2));
-    }
-}
+  import java.security.InvalidKeyException;
+  import java.security.NoSuchAlgorithmException;
+   
+  import javax.crypto.BadPaddingException;
+  import javax.crypto.Cipher;
+  import javax.crypto.IllegalBlockSizeException;
+  import javax.crypto.KeyGenerator;
+  import javax.crypto.NoSuchPaddingException;
+  import javax.crypto.SecretKey;
+   
+  public class teste
+  {
+   
+   
+         public static void main(String[] argv) {
+             byte[] e = Suporte.encriptar("123sdhdfghdfghdfghdfghdfgh");
+             System.out.println("Encriptado: " + e);
+             System.out.println(Suporte.decriptar(e));
+   
+         }
+         
+  }

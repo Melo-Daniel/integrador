@@ -6,7 +6,16 @@
 package helpers;
 
 import java.io.File;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.prefs.Preferences;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 
@@ -101,7 +110,8 @@ public class Suporte {
         }
     }
 
-    public static File[] listarExtatos(int cod, int mes, int ano) {
+    public static ArrayList<File> listarExtatos(int cod, int mes, int ano) {
+        ArrayList<File> arquivos = new ArrayList<>();
         File f = new File("M:");
         String codigo = Suporte.formatCodigo(cod);
         File fs[] = f.listFiles();
@@ -128,8 +138,12 @@ public class Suporte {
                                                             if (f7.getName().equals(String.valueOf(ano))) {
                                                                 for (File f8 : f7.listFiles()) {
                                                                     if (f8.getName().contains(String.valueOf(mes))) {
-                                                                        for (File f9 : f8.listFiles()) {
-                                                                            System.out.println(f6.getName() + " - " + f7.getName() + " - " + f8.getName() + " - " + f9.getName());
+                                                                        try{
+                                                                            for(File f9 : f8.listFiles()){
+                                                                            arquivos.add(f9);
+                                                                        }
+                                                                        }catch(NullPointerException ex){
+                                                                            return null;
                                                                         }
                                                                     }
                                                                 }
@@ -147,6 +161,98 @@ public class Suporte {
                 }
             }
         }
-        return null;
+        return arquivos;
     }
+    
+    public static String ajustarCaminho(String str){
+        String st = str.replace("\\",";");
+        String txt[] = st.split(";");
+        String tf = "";
+        for(int i = 0; i < txt.length; i++){
+            tf = (txt[7]+" - "+txt[8]+" - "+txt[9]+" - "+txt[10]);
+        }
+  
+        return tf;
+    }
+    
+    public static byte[] encriptar(String txt) {
+   
+               try{
+   
+                   KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
+                   SecretKey chaveDES = keygenerator.generateKey();
+   
+                   Cipher cifraDES;
+   
+                   // Cria a cifra 
+                   cifraDES = Cipher.getInstance("DES/ECB/PKCS5Padding");
+   
+                   // Inicializa a cifra para o processo de encriptação
+                   cifraDES.init(Cipher.ENCRYPT_MODE, chaveDES);
+   
+                   // Texto puro
+                   byte[] textoPuro = txt.getBytes();
+   
+                  
+                   // Texto encriptado
+                   byte[] textoEncriptado = cifraDES.doFinal(textoPuro);
+   
+                   return textoEncriptado;
+   
+                   
+               }catch(NoSuchAlgorithmException e){
+                      e.printStackTrace();
+               }catch(NoSuchPaddingException e){
+                      e.printStackTrace();
+               }catch(InvalidKeyException e){
+                      e.printStackTrace();
+               }catch(IllegalBlockSizeException e){
+                      e.printStackTrace();
+               }catch(BadPaddingException e){
+                      e.printStackTrace();
+               } 
+               return null;
+         }
+    
+    public static byte[] decriptar(byte[] txt) {
+   
+               try{
+   
+                   KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
+                   SecretKey chaveDES = keygenerator.generateKey();
+   
+                   Cipher cifraDES;
+   
+                   // Cria a cifra 
+                   cifraDES = Cipher.getInstance("DES/ECB/PKCS5Padding");
+   
+                   // Inicializa a cifra para o processo de encriptação
+                   cifraDES.init(Cipher.ENCRYPT_MODE, chaveDES);
+   
+                   // Texto puro
+                   byte[] textoPuro = "123".getBytes();
+   
+                   
+                   // Texto encriptado
+                   
+   
+                   // Inicializa a cifra também para o processo de decriptação
+                   cifraDES.init(Cipher.DECRYPT_MODE, chaveDES);
+   
+                   // Decriptografa o texto
+                   byte[] textoDecriptografado = cifraDES.doFinal(txt);
+                   return textoDecriptografado;
+               }catch(NoSuchAlgorithmException e){
+                      e.printStackTrace();
+               }catch(NoSuchPaddingException e){
+                      e.printStackTrace();
+               }catch(InvalidKeyException e){
+                      e.printStackTrace();
+               }catch(IllegalBlockSizeException e){
+                      e.printStackTrace();
+               }catch(BadPaddingException e){
+                      e.printStackTrace();
+               } 
+               return null;
+         }
 }

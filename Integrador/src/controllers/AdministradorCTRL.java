@@ -56,4 +56,8 @@ public class AdministradorCTRL {
         }
         return lista;
     }
+    
+    public static int getImpAmount(int mes, int ano) {
+        return c.getImpAmount(mes, ano);
+    }
 }

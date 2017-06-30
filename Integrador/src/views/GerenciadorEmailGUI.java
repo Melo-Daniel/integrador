@@ -7,6 +7,7 @@ package views;
 
 import SendEmail.SendEmail;
 import controllers.CarteiraCTRL;
+import controllers.ColaboradorCTRL;
 import controllers.EmailCTRL;
 import java.awt.Color;
 import java.awt.Component;
@@ -170,8 +171,11 @@ public class GerenciadorEmailGUI extends JFrame {
                 if (chLucroReal.isSelected()) {
                     ArrayList<Demanda> l = CarteiraCTRL.listarLucroReal(nome);
                     System.out.println(l);
-                    if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l)) {
-                        JOptionPane.showMessageDialog(null, "Tudo certo");
+                    if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1,
+                            Integer.parseInt(tfAno.getText()),
+                            l,ColaboradorCTRL.getUsuariologado())) {
+                        JOptionPane.showMessageDialog(null, "Os emails foram enviados com muito sucesso!");
+                        listarCarteira(nome);
                     }else{
                         JOptionPane.showMessageDialog(null, "hmmm, acho q n funfou");
                     }
@@ -181,8 +185,9 @@ public class GerenciadorEmailGUI extends JFrame {
                     ArrayList<Demanda> l = CarteiraCTRL.listarRegime(nome,"L. PRESUMIDO");
                     System.out.println(l);
                     
-                    if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l)) {
-                        JOptionPane.showMessageDialog(null, "Tudo certo");
+                    if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l,ColaboradorCTRL.getUsuariologado())) {
+                        JOptionPane.showMessageDialog(null, "Os emails foram enviados com muito sucesso!");
+                        listarCarteira(nome);
                     }else{
                         JOptionPane.showMessageDialog(null, "Os emails não foram disparados, provavelmente já foram enviados");
                     }
@@ -192,8 +197,9 @@ public class GerenciadorEmailGUI extends JFrame {
                     ArrayList<Demanda> l = CarteiraCTRL.listarRegime(nome,"SIMPLES");
                     System.out.println(l);
                     
-                    if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l)) {
+                    if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l,ColaboradorCTRL.getUsuariologado())) {
                         JOptionPane.showMessageDialog(null, "Os emails foram enviados com muito sucesso!");
+                        listarCarteira(nome);
                     }else{
                         JOptionPane.showMessageDialog(null, "Os emails não foram disparados, provavelmente já foram enviados");
                     }

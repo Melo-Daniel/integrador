@@ -38,7 +38,7 @@ public class teste {
       final String password = "natal@12";//change accordingly
 
       // Assuming you are sending email through relay.jangosmtp.net
-      String host = "smtp.uol.com";
+      String host = "smtp.eliteconsultores.com.br";
 
       Properties props = new Properties();
       props.put("mail.smtp.auth", "true");

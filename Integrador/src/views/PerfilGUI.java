@@ -6,9 +6,12 @@
 package views;
 
 import controllers.ColaboradorCTRL;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -107,8 +110,29 @@ public class PerfilGUI extends JFrame{
     }
 
     private void definirEventos() {
+        btSalvar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(tfEmail.getText().equals(tfConfirmarEmail.getText()) &&
+                        tfSenhaSistema.getText().equals(tfConfirmarSenhaSistema.getText())&&
+                        tfSenhaEmail.getText().equals(tfConfirmarSenhaEmail.getText())){
+                    ColaboradorCTRL.atualizarDados(tfSenhaSistema.getText(), tfEmail.getText(), tfSenhaEmail.getText());
+                    JOptionPane.showMessageDialog(null, "As informações foram atualizadas!");
+                }else{
+                    JOptionPane.showMessageDialog(null, "As informações não foram confirmadas corretamente!");
+                }
+                
+            }
+        });
         
+        btCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
     }
+    
     
     public void abrir(String nome) {
         PerfilGUI p = new PerfilGUI(nome);

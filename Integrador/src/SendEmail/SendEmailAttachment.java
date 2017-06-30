@@ -37,15 +37,13 @@ public class SendEmailAttachment {
         //final String username = "daniel.melo42@outlook.com";//change accordingly
         //final String password = "Dado201094";//change accordingly
         // Assuming you are sending email through relay.jangosmtp.net
-        String host = "smtps.uol.com.br";
+        String host = "smtp.eliteconsultores.com.br";
 
         Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.eliteconsultores.com.br");
+        props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", host);
-        props.put("mail.smtp.socketFactory.port", "587");
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.port", "587");
 
         // Get the Session object.
         Session session = Session.getInstance(props,

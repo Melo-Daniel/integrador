@@ -11,6 +11,7 @@ import SendEmail.SendEmail;
 import helpers.LucroRealMSG;
 import helpers.PresumidoSimplesMSG;
 import java.util.ArrayList;
+import models.Colaborador;
 import models.Demanda;
 
 /**
@@ -22,8 +23,9 @@ public class EmailCTRL {
     static EmailDAO e = new EmailDAO();
     CarteiraDAO c = new CarteiraDAO();
 
-    public static boolean enviarEmail(int mes, int ano, ArrayList<Demanda> list) {
+    public static boolean enviarEmail(int mes, int ano, ArrayList<Demanda> list,String nome) {
         int i = 0;
+        Colaborador c = ColaboradorCTRL.getColaborador(nome);
         for (Demanda d : list) {
             System.out.println(d.getResponsavel());
             if (validarEnvio(d.getCod(), mes, ano)) {
@@ -37,8 +39,8 @@ public class EmailCTRL {
                 SendEmail.send(d.getEmail(),
                         "Documentos - "+ d.getEmpresa(),
                         msg,
-                        "daniel.melo42@outlook.com",
-                        "Dado201094");
+                        c.getEmail(),
+                        c.getSenhaEmail());
                 e.marcarEnviado(d.getCod(), mes, ano);
                 i++;
                 System.out.println(i + " de " + list.size());

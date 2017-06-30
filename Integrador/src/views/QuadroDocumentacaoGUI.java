@@ -7,6 +7,7 @@ package views;
 
 import controllers.AdministradorCTRL;
 import controllers.CarteiraCTRL;
+import controllers.ColaboradorCTRL;
 import helpers.Suporte;
 import java.awt.Color;
 import java.awt.Component;
@@ -17,6 +18,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -75,11 +77,12 @@ public class QuadroDocumentacaoGUI extends JFrame {
         this.nome = nome;
         listarCarteira(nome);
         start();
+        ColaboradorCTRL.setUsuariologado(nome);
     }
 
     private void inicializarComponentes() {
         setTitle("Quadro de Documentação");
-        setBounds(0, 0, 595, 750);
+        setBounds(0, 0, 595, 670);
         setLayout(null);
         getContentPane().setBackground(Color.white);
 
@@ -92,9 +95,6 @@ public class QuadroDocumentacaoGUI extends JFrame {
         mnAjuda = new JMenu("Ajuda");
         mbPrincipal.add(mnAjuda);
 
-        mnSair = new JMenu("Sair");
-        mbPrincipal.add(mnSair);
-
         miPerfil = new JMenuItem("Perfil");
         mnArquivos.add(miPerfil);
 
@@ -104,10 +104,10 @@ public class QuadroDocumentacaoGUI extends JFrame {
         miPendente = new JMenuItem("Pendente");
         mnArquivos.add(miPendente);
 
-//      lbLogo = new JLabel();
-//      lbLogo.setBounds(0, 0, 90, 80);
-//      lbLogo.setIcon(new ImageIcon("C:\\Users\\daniel.freitas\\Documents\\NetBeansProjects\\Conversor de Extratos\\src\\img\\logo.jpg"));
-//      add(lbLogo);
+        lbLogo = new JLabel();
+        lbLogo.setBounds(0, 0, 90, 80);
+        lbLogo.setIcon(new ImageIcon("C:\\Users\\daniel.freitas\\Documents\\NetBeansProjects\\Conversor de Extratos\\src\\img\\logo.jpg"));
+        add(lbLogo);
         lbUsuario = new JLabel("Bem vinda " + nome);
         lbUsuario.setBounds(480, 10, 100, 25);
         add(lbUsuario);
@@ -188,21 +188,23 @@ public class QuadroDocumentacaoGUI extends JFrame {
 
         scCarteira.setViewportView(tbCarteira);
         add(scCarteira);
-        
-        
+
         lbVermelho = new JLabel("Pendente");
         lbVermelho.setBounds(10, 580, 100, 20);
         lbVermelho.setForeground(vermelho);
+        lbVermelho.setFont(new Font("Arial", Font.BOLD, 13));
         add(lbVermelho);
-        
+
         lbAzul = new JLabel("Recebido");
-        lbAzul.setBounds(10, 595, 100, 20);
+        lbAzul.setBounds(100, 580, 100, 20);
         lbAzul.setForeground(azul);
+        lbAzul.setFont(new Font("Arial", Font.BOLD, 13));
         add(lbAzul);
-        
+
         lbVerde = new JLabel("Importado");
-        lbVerde.setBounds(10, 610, 100, 20);
+        lbVerde.setBounds(205, 580, 100, 20);
         lbVerde.setForeground(verde);
+        lbVerde.setFont(new Font("Arial", Font.BOLD, 13));
         add(lbVerde);
     }
 
@@ -216,22 +218,28 @@ public class QuadroDocumentacaoGUI extends JFrame {
                     JOptionPane.showMessageDialog(null, "Selecione uma linha");
                 } else {
                     int cod = (int) tbCarteira.getValueAt(row, 0);
+                    int resp = 0;
+                    ArrayList<File> l = Suporte.listarExtatos(cod, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()));
 
-                    if (Suporte.verificarArquivo(cod, String.valueOf(cbMes.getSelectedIndex() + 1))) {
+                    String corpo = "";
+                    if (l != null && Suporte.verificarArquivo(cod, String.valueOf(cbMes.getSelectedIndex() + 1))) {
+                        for (File f : l) {
+
+                            corpo += (Suporte.ajustarCaminho(f.getAbsolutePath())) + "\n";
+                        }
+                        resp = JOptionPane.showConfirmDialog(null, "Estes são os arquivos nas pastas referentes a competência do mês " + (cbMes.getSelectedIndex() + 1) + "\n"
+                                + corpo);
+
+                    } else {
+                        resp = JOptionPane.showConfirmDialog(null, "Não existem arquivos nas pastas do mês selecionado!\n"
+                                + " Tem certeza que deseja marcar os documentos como recebidos?");
+                    }
+
+                    if (resp == 0) {
                         CarteiraCTRL.marcarRecebido(cod, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()));
                         listarCarteira(nome);
                         atualizarResultados();
-                    } else {
-                        int resp = JOptionPane.showConfirmDialog(null, "Não existem os arquivos necessários para a validação!\n"
-                                + "Tem certeza que deseja marcar como recebida?");
-                        if (resp == 0) {
-                            CarteiraCTRL.marcarRecebido(cod, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()));
-                            listarCarteira(nome);
-                            atualizarResultados();
-                        }
-                        System.out.println(resp);
                     }
-
                 }
 
             }
@@ -296,6 +304,7 @@ public class QuadroDocumentacaoGUI extends JFrame {
                 new EmailPendenteGUI().abrir();
             }
         });
+
     }
 
     TimerTask task = new TimerTask() {
@@ -310,7 +319,7 @@ public class QuadroDocumentacaoGUI extends JFrame {
     };
 
     public void start() {
-        t.scheduleAtFixedRate(task, 1000, 10000);
+        t.scheduleAtFixedRate(task, 10000, 10000);
     }
 
     public static void abrir() {

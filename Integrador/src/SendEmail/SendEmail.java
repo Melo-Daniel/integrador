@@ -26,7 +26,7 @@ public class SendEmail
     {
         Properties props = new Properties();
 
-        props.put("mail.smtp.host", "smtp-mail.outlook.com");
+        props.put("mail.smtp.host", "smtp.eliteconsultores.com.br");
         props.put("mail.smtp.port", "587");	
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -53,8 +53,9 @@ public class SendEmail
             
         } catch (MessagingException e) 
         {
-            JOptionPane.showMessageDialog(null,"Veish! Alguma coisa aconteceu!");
-            
+            JOptionPane.showMessageDialog(null, "Ops! Aparentemente aconteceu um erro.\n"
+                    + "Tente novamente, se o erro persistir entre em contato com o setor de TI\n"
+                    + "Ou seja, Elton! :)");
             throw new RuntimeException(e);
         }
         

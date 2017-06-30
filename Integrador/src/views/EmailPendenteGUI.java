@@ -8,6 +8,7 @@ package views;
 import SendEmail.SendEmail;
 import SendEmail.SendEmailAttachment;
 import controllers.CarteiraCTRL;
+import controllers.ColaboradorCTRL;
 import helpers.Suporte;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import models.Colaborador;
 import models.Demanda;
 
 /**
@@ -90,11 +92,14 @@ public class EmailPendenteGUI extends JFrame{
         btEnviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Demanda d = CarteiraCTRL.getEmpresaCodigo("PEDRITA", Integer.parseInt(tfCodigo.getText()));
-                SendEmailAttachment.send("danielfmelo21@gmail.com", 
-                        "daniel.freitas@eliteconsultores.com.br", 
-                        "daniel.freitas@eliteconsultores.com.br", 
-                        "natal@12", 
+                
+                Colaborador c = ColaboradorCTRL.getColaborador(ColaboradorCTRL.getUsuariologado());
+                Demanda d = CarteiraCTRL.getEmpresaCodigo(ColaboradorCTRL.getUsuariologado(), Integer.parseInt(tfCodigo.getText()));
+                
+                SendEmailAttachment.send(d.getEmail(), 
+                        c.getEmail(), 
+                        c.getEmail(),
+                        c.getSenhaEmail(), 
                         tfArquivo.getText());
                 JOptionPane.showMessageDialog(null, "Email enviado com sucesso!");
             }
