@@ -179,7 +179,10 @@ public class AdministradorGUI extends JFrame {
                     JOptionPane.showMessageDialog(null, "Selecione uma linha");
                 }else{
                     int cod = (int)tbQuadro.getValueAt(row, 0);
-                    if(AdministradorCTRL.marcarImportada(cod,5,2017)){
+                    int mes = cbMes.getSelectedIndex()+1;
+                    int ano = Integer.parseInt(tfAno.getText());
+                    
+                    if(AdministradorCTRL.marcarImportada(cod,mes,ano)){
                         listarEmpresas();
                     }
                 }
@@ -212,7 +215,7 @@ public class AdministradorGUI extends JFrame {
     }
 
     
-    public static void main(String[] args) {
+    public void abrir() {
         AdministradorGUI a = new AdministradorGUI();
         a.setVisible(true);
         a.setLocationRelativeTo(null);

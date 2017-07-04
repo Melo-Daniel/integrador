@@ -24,23 +24,23 @@ import models.Demanda;
 public class inserir {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-//        BufferedReader in;
-//        in = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\daniel.freitas\\Desktop\\CARTEIRAS.csv"), "iso-8859-1"));
-//        String str = "", content = "";
-//        while ((str = in.readLine()) != null) {
-//            content += str + "\n";
-//        }
-//        in.close();
-//
-//        String txt[] = content.split("\n");
-//        for (int i = 0; i < txt.length; i++) {
-//            String reg[] = txt[i].split(";");
-//            System.out.println(reg[0]);
-//            Demanda d = new Demanda(Integer.parseInt(reg[0]),1, 1, 1, reg[1], reg[3], "-----", reg[7], reg[9], reg[8]);
-//            new QuadroDAO().inserir(d);
-//        }
+        BufferedReader in;
+        in = new BufferedReader(new InputStreamReader(new FileInputStream("C:\\Users\\daniel.freitas\\Desktop\\CARTEIRAS.csv"), "iso-8859-1"));
+        String str = "", content = "";
+        while ((str = in.readLine()) != null) {
+            content += str + "\n";
+        }
+        in.close();
 
-    Colaborador c = ColaboradorCTRL.getColaborador("PEDRITA");
-        System.out.println(c.getSenhaEmail());
+        String txt[] = content.split("\n");
+        for (int i = 0; i < txt.length; i++) {
+            String reg[] = txt[i].split(";");
+            System.out.println(reg[0]);
+            Demanda d = new Demanda(Integer.parseInt(reg[0]),1, 1, 1, reg[1], reg[3], "-----", reg[7], reg[9], reg[8]);
+            new QuadroDAO().inserir(d);
+        }
+
+//    Colaborador c = ColaboradorCTRL.getColaborador("PEDRITA");
+//        System.out.println(c.getSenhaEmail());
     }
 }

@@ -77,7 +77,7 @@ public class GerenciadorEmailGUI extends JFrame {
         chLucroReal.setBounds(10, 50, 100, 25);
         add(chLucroReal);
 
-        chPresumido = new JCheckBox("Presunido");
+        chPresumido = new JCheckBox("Presumido");
         chPresumido.setBounds(10, 80, 100, 25);
         add(chPresumido);
 

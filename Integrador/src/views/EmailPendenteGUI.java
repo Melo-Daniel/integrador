@@ -30,7 +30,7 @@ import models.Demanda;
 public class EmailPendenteGUI extends JFrame{
     private JLabel lbCodigo,lbArquivo;
     private JTextField tfCodigo,tfArquivo;
-    private JButton btEnviar,btCancelar;
+    private JButton btEnviar,btCancelar,btAbrir;
     
     public EmailPendenteGUI() {
         try {
@@ -63,29 +63,21 @@ public class EmailPendenteGUI extends JFrame{
         tfArquivo.setBounds(130,45,200,25);
         add(tfArquivo);
         
-        btEnviar = new JButton("Enviar");
-        btEnviar.setBounds(130,80,95,25);
-        add(btEnviar);
+        btAbrir = new JButton("Abrir");
+        btAbrir.setBounds(130,80,95,25);
+        add(btAbrir);
         
-        btCancelar = new JButton("Cancelar");
-        btCancelar.setBounds(235,80,95,25);
-        add(btCancelar);
+        btEnviar = new JButton("Enviar");
+        btEnviar.setBounds(235,80,95,25);
+        add(btEnviar);
         
     }
 
     private void definirEventos() {
-        tfArquivo.addFocusListener(new FocusListener() {
+        btAbrir.addActionListener(new ActionListener() {
             @Override
-            public void focusGained(FocusEvent e) {
-                if(tfArquivo.getText().equals("")){
-                    tfArquivo.setText(Suporte.abrirArquivo());
-                    
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                
+            public void actionPerformed(ActionEvent e) {
+                tfArquivo.setText(Suporte.abrirArquivo());
             }
         });
         

@@ -8,6 +8,7 @@ package views;
 import controllers.ColaboradorCTRL;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.prefs.Preferences;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,7 +22,12 @@ import javax.swing.UIManager;
  * @author daniel.freitas
  */
 public class Login extends JFrame {
-
+    
+    private static Preferences pref = Preferences.userRoot();
+    
+    private static String nome = pref.get("usuario", "");
+    private static String senha = pref.get("senha", "");
+    
     private JLabel lbNome, lbSenha;
     private JPasswordField pfSenha;
     private JTextField tfNome;
@@ -46,7 +52,7 @@ public class Login extends JFrame {
         lbNome.setBounds(10, 10, 100, 25);
         add(lbNome);
 
-        tfNome = new JTextField("PEDRITA");
+        tfNome = new JTextField(nome);
         tfNome.setBounds(60, 10, 100, 25);
         add(tfNome);
 
@@ -54,7 +60,7 @@ public class Login extends JFrame {
         lbSenha.setBounds(10, 50, 100, 25);
         add(lbSenha);
 
-        pfSenha = new JPasswordField("elite123@");
+        pfSenha = new JPasswordField(senha);
         pfSenha.setBounds(60, 50, 100, 25);
         add(pfSenha);
 
@@ -79,12 +85,19 @@ public class Login extends JFrame {
         btEntrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (ColaboradorCTRL.Logar(tfNome.getText(), pfSenha.getText())) {
-                    new QuadroDocumentacaoGUI(tfNome.getText()).abrir();
+                if (tfNome.getText().equals("adm123") && pfSenha.getText().equals("adm123")) {
+                    pref.put("usuario", tfNome.getText());
                     
-                    dispose();
-                }else{
-                    JOptionPane.showMessageDialog(null, "Nome e/ou sennha incorreto(s)","Erro ao Logar",0);
+                    new AdministradorGUI().abrir();
+                } else {
+                    if (ColaboradorCTRL.Logar(tfNome.getText().toUpperCase(), pfSenha.getText())) {
+                        pref.put("usuario", tfNome.getText());
+                        new QuadroDocumentacaoGUI(tfNome.getText()).abrir();
+
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Nome e/ou sennha incorreto(s)", "Erro ao Logar", 0);
+                    }
                 }
             }
         });
@@ -95,7 +108,7 @@ public class Login extends JFrame {
         l.setVisible(true);
         l.setLocationRelativeTo(null);
         l.setResizable(false);
-        
+
         l.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 

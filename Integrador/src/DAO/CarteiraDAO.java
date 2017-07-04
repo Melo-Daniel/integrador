@@ -35,7 +35,7 @@ public class CarteiraDAO {
     public ArrayList<Demanda> listarDemandas(String nome) {
         ArrayList<Demanda> lista = new ArrayList<>();
 
-        String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_COLABORADOR_RELACIONAMENTO = '" + nome + "'";
+        String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_COLABORADOR_RELACIONAMENTO = '" + nome + "' ORDER BY DOC_COD";
 
         try {
             stm = con.prepareStatement(query);
