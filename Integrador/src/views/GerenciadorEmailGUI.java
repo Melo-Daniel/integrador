@@ -66,7 +66,7 @@ public class GerenciadorEmailGUI extends JFrame {
 
     private void inicializarComponentes() {
         setTitle("Gerenciar Emails " + nome);
-        setBounds(0, 0, 500, 600);
+        setBounds(0, 0, 500, 450);
         setLayout(null);
 
         chTodos = new JCheckBox("Todos");
@@ -78,28 +78,16 @@ public class GerenciadorEmailGUI extends JFrame {
         add(chLucroReal);
 
         chPresumido = new JCheckBox("Presumido");
-        chPresumido.setBounds(10, 80, 100, 25);
+        chPresumido.setBounds(120, 20, 100, 25);
         add(chPresumido);
 
         chSimples = new JCheckBox("Simples");
-        chSimples.setBounds(10, 110, 100, 25);
+        chSimples.setBounds(120, 50, 100, 25);
         add(chSimples);
 
-        chMei = new JCheckBox("Mei");
-        chMei.setBounds(10, 140, 100, 25);
+        chMei = new JCheckBox("Associação");
+        chMei.setBounds(10, 80, 100, 25);
         add(chMei);
-
-        chIsento = new JCheckBox("Isento");
-        chIsento.setBounds(10, 170, 100, 25);
-        add(chIsento);
-
-        rbTodos = new JRadioButton("Todos");
-        rbTodos.setBounds(120, 20, 100, 25);
-        add(rbTodos);
-
-        rbPendentes = new JRadioButton("Pendentes");
-        rbPendentes.setBounds(120, 50, 100, 25);
-        add(rbPendentes);
 
         bgStatus = new ButtonGroup();
         bgStatus.add(rbPendentes);
@@ -129,11 +117,11 @@ public class GerenciadorEmailGUI extends JFrame {
         add(tfAno);
 
         btEnviar = new JButton("Enviar");
-        btEnviar.setBounds(340, 20, 100, 25);
+        btEnviar.setBounds(340, 20, 100, 55);
         add(btEnviar);
 
         scCarteira = new JScrollPane();
-        scCarteira.setBounds(10, 260, 470, 300);
+        scCarteira.setBounds(10, 110, 470, 300);
 
         dmCarteira = new DefaultTableModel(new Object[]{
             "Cód", "Empresa", "Regime"
@@ -195,6 +183,17 @@ public class GerenciadorEmailGUI extends JFrame {
                 
                 if (chSimples.isSelected()) {
                     ArrayList<Demanda> l = CarteiraCTRL.listarRegime(nome,"SIMPLES");
+                    System.out.println(l);
+                    
+                    if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l,ColaboradorCTRL.getUsuariologado())) {
+                        JOptionPane.showMessageDialog(null, "Os emails foram enviados com muito sucesso!");
+                        listarCarteira(nome);
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Os emails não foram disparados, provavelmente já foram enviados");
+                    }
+                }
+                if (chMei.isSelected()) {
+                    ArrayList<Demanda> l = CarteiraCTRL.listarRegime(nome,"ASSOCIAÇÃO");
                     System.out.println(l);
                     
                     if (EmailCTRL.enviarEmail(cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()), l,ColaboradorCTRL.getUsuariologado())) {
