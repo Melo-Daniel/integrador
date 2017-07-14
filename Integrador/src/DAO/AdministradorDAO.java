@@ -184,4 +184,20 @@ public class AdministradorDAO {
 
         return 0;
     }
+    public boolean marcarArquivoInvalido(int cod,int mes,int ano) {
+        String query = "UPDATE TB_RECEBIMENTO_ARQUIVOS "
+                + "SET RAR_STATUS = 5 "
+                + "WHERE "
+                + "RAR_DOC_COD = " + cod + " and "
+                + "RAR_MES = "+ mes + " and "
+                + "RAR_ANO = " + ano;
+        System.out.println(query);
+        try {
+            stm = con.prepareStatement(query);
+            return !stm.execute();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
 }

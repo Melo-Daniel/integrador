@@ -61,8 +61,8 @@ public class CarteiraCTRL {
         return c.marcarRecebida(cod, mes, ano);
     }
 
-    public static boolean desmarcarRecebido(int cod) {
-        return c.desmarcarRecebida(cod);
+    public static boolean desmarcarRecebido(int cod, int mes, int ano) {
+        return c.desmarcarRecebida(cod,mes,ano);
     }
     public static ArrayList<Demanda> pesquisa(String txt,ArrayList<Demanda> list){
         ArrayList<Demanda> lista = new ArrayList<>();

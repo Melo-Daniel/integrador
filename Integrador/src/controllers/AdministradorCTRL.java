@@ -60,4 +60,8 @@ public class AdministradorCTRL {
     public static int getImpAmount(int mes, int ano) {
         return c.getImpAmount(mes, ano);
     }
+    
+    public static boolean marcarArquivoInvalido(int cod, int mes, int ano){
+        return c.marcarArquivoInvalido(cod, mes, ano);
+    }
 }

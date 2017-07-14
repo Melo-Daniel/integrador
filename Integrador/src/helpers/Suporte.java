@@ -61,15 +61,16 @@ public class Suporte {
         return codigo;
     }
 
-    public static boolean verificarArquivo(int cod, String mes) {
+    public static ArrayList<File> verificarArquivo(int cod, String mes, int year) {
         int cont = 0;
+        ArrayList<File> lp = new ArrayList<>();
         File f = new File("M:");
         File fs[] = f.listFiles();
         String codigo = (Suporte.formatCodigo(cod));
         for (File file : fs) {
-            File emp = null;
+
             File matriz = null;
-            if (file.getName().contains(codigo)) {
+            if (file.getName().contains(codigo) && file.isDirectory()) {
 
                 File grupo[] = file.listFiles();
                 for (File f1 : grupo) {
@@ -80,20 +81,22 @@ public class Suporte {
 
                 File pastas[] = matriz.listFiles();
                 for (File f1 : pastas) {
-                    if (f1.getName().contains("FINANCEIRO")) {
+                    if (f1.getName().contains("FINANCEIRO") && f1.isDirectory()) {
                         File financeiro = f1;
                         for (File f2 : financeiro.listFiles()) {
-                            if (f2.getName().contains("2017")) {
+                            if (f2.getName().contains(String.valueOf(year)) && f2.isDirectory()) {
                                 File ano = f2;
                                 for (File f3 : ano.listFiles()) {
                                     File m = null;
                                     if (mes.length() == 1) {
                                         mes = "0" + mes;
                                     }
-                                    if (f3.getName().contains(mes)) {
+
+                                    if (f3.getName().contains(mes) && f3.isDirectory()) {
                                         m = f3;
                                         for (File f4 : m.listFiles()) {
-                                            cont++;
+
+                                            lp.add(f4);
                                         }
                                     }
                                 }
@@ -104,11 +107,7 @@ public class Suporte {
 
             }
         }
-        if (cont > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return lp;
     }
 
     public static ArrayList<File> listarExtatos(int cod, int mes, int ano) {
@@ -117,38 +116,43 @@ public class Suporte {
         String codigo = Suporte.formatCodigo(cod);
         File fs[] = f.listFiles();
         for (File f1 : fs) {
-            if (f1.getName().contains(codigo)) {
+            if (f1.getName().contains(codigo) && f1.isDirectory()) {
                 for (File f2 : f1.listFiles()) {
-                    if (f2.getName().contains(codigo)) {
+                    if (f2.getName().contains(codigo) && f2.isDirectory()) {
                         for (File f3 : f2.listFiles()) {
-                            if (f3.getName().contains("ARQUIVOS_DIGITAIS")) {
+                            if (f3.getName().contains("ARQUIVOS_DIGITAIS") && f3.isDirectory()) {
                                 for (File f4 : f3.listFiles()) {
-                                    if (f4.getName().contains("CONTABIL")) {
+                                    if (f4.getName().contains("CONTABIL") && f4.isDirectory()) {
                                         for (File f5 : f4.listFiles()) {
-                                            if (f5.getName().contains("EXTRATOS")) {
+                                            if (f5.getName().contains("EXTRATOS") && f5.isDirectory()) {
                                                 for (File f6 : f5.listFiles()) {
+
                                                     if (f6.getName().contains("BANCO_DO_BRASIL")
                                                             || f6.getName().contains("CAIXA")
                                                             || f6.getName().contains("ITAU")
                                                             || f6.getName().contains("TRIBANCO")
                                                             || f6.getName().contains("BRADESCO")
                                                             || f6.getName().contains("BANCO_DO_NORDESTE")
-                                                            || f6.getName().contains("SANTANDER")) {
+                                                            || f6.getName().contains("SANTANDER") && f6.isDirectory()) {
 
-                                                        for (File f7 : f6.listFiles()) {
-                                                            if (f7.getName().equals(String.valueOf(ano))) {
-                                                                for (File f8 : f7.listFiles()) {
-                                                                    if (f8.getName().contains(String.valueOf(mes))) {
-                                                                        try{
-                                                                            for(File f9 : f8.listFiles()){
-                                                                            arquivos.add(f9);
-                                                                        }
-                                                                        }catch(NullPointerException ex){
-                                                                            return null;
+                                                        try {
+                                                            for (File f7 : f6.listFiles()) {
+
+                                                                if (f7.getName().equals(String.valueOf(ano)) && f7.isDirectory()) {
+                                                                    for (File f8 : f7.listFiles()) {
+
+                                                                        if (f8.getName().contains(String.valueOf(mes)) && f8.isDirectory()) {
+
+                                                                            for (File f9 : f8.listFiles()) {
+
+                                                                                arquivos.add(f9);
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
                                                             }
+                                                        } catch (NullPointerException ex) {
+                                                            return null;
                                                         }
                                                     }
                                                 }
@@ -164,96 +168,91 @@ public class Suporte {
         }
         return arquivos;
     }
-    
-    public static String ajustarCaminho(String str){
-        String st = str.replace("\\",";");
+
+    public static String ajustarCaminho(String str) {
+        String st = str.replace("\\", ";");
         String txt[] = st.split(";");
         String tf = "";
-        for(int i = 0; i < txt.length; i++){
-            tf = (txt[7]+" - "+txt[8]+" - "+txt[9]+" - "+txt[10]);
+        for (int i = 0; i < txt.length; i++) {
+            tf = (txt[7] + " - " + txt[8] + " - " + txt[9] + " - " + txt[10]);
         }
-  
+
         return tf;
     }
-    
+
     public static byte[] encriptar(String txt) {
-   
-               try{
-   
-                   KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
-                   SecretKey chaveDES = keygenerator.generateKey();
-   
-                   Cipher cifraDES;
-   
-                   // Cria a cifra 
-                   cifraDES = Cipher.getInstance("DES/ECB/PKCS5Padding");
-   
-                   // Inicializa a cifra para o processo de encriptação
-                   cifraDES.init(Cipher.ENCRYPT_MODE, chaveDES);
-   
-                   // Texto puro
-                   byte[] textoPuro = txt.getBytes();
-   
-                  
-                   // Texto encriptado
-                   byte[] textoEncriptado = cifraDES.doFinal(textoPuro);
-   
-                   return textoEncriptado;
-   
-                   
-               }catch(NoSuchAlgorithmException e){
-                      e.printStackTrace();
-               }catch(NoSuchPaddingException e){
-                      e.printStackTrace();
-               }catch(InvalidKeyException e){
-                      e.printStackTrace();
-               }catch(IllegalBlockSizeException e){
-                      e.printStackTrace();
-               }catch(BadPaddingException e){
-                      e.printStackTrace();
-               } 
-               return null;
-         }
-    
+
+        try {
+
+            KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
+            SecretKey chaveDES = keygenerator.generateKey();
+
+            Cipher cifraDES;
+
+            // Cria a cifra 
+            cifraDES = Cipher.getInstance("DES/ECB/PKCS5Padding");
+
+            // Inicializa a cifra para o processo de encriptação
+            cifraDES.init(Cipher.ENCRYPT_MODE, chaveDES);
+
+            // Texto puro
+            byte[] textoPuro = txt.getBytes();
+
+            // Texto encriptado
+            byte[] textoEncriptado = cifraDES.doFinal(textoPuro);
+
+            return textoEncriptado;
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static byte[] decriptar(byte[] txt) {
-   
-               try{
-   
-                   KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
-                   SecretKey chaveDES = keygenerator.generateKey();
-   
-                   Cipher cifraDES;
-   
-                   // Cria a cifra 
-                   cifraDES = Cipher.getInstance("DES/ECB/PKCS5Padding");
-   
-                   // Inicializa a cifra para o processo de encriptação
-                   cifraDES.init(Cipher.ENCRYPT_MODE, chaveDES);
-   
-                   // Texto puro
-                   byte[] textoPuro = "123".getBytes();
-   
-                   
-                   // Texto encriptado
-                   
-   
-                   // Inicializa a cifra também para o processo de decriptação
-                   cifraDES.init(Cipher.DECRYPT_MODE, chaveDES);
-   
-                   // Decriptografa o texto
-                   byte[] textoDecriptografado = cifraDES.doFinal(txt);
-                   return textoDecriptografado;
-               }catch(NoSuchAlgorithmException e){
-                      e.printStackTrace();
-               }catch(NoSuchPaddingException e){
-                      e.printStackTrace();
-               }catch(InvalidKeyException e){
-                      e.printStackTrace();
-               }catch(IllegalBlockSizeException e){
-                      e.printStackTrace();
-               }catch(BadPaddingException e){
-                      e.printStackTrace();
-               } 
-               return null;
-         }
+
+        try {
+
+            KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
+            SecretKey chaveDES = keygenerator.generateKey();
+
+            Cipher cifraDES;
+
+            // Cria a cifra 
+            cifraDES = Cipher.getInstance("DES/ECB/PKCS5Padding");
+
+            // Inicializa a cifra para o processo de encriptação
+            cifraDES.init(Cipher.ENCRYPT_MODE, chaveDES);
+
+            // Texto puro
+            byte[] textoPuro = "123".getBytes();
+
+            // Texto encriptado
+            // Inicializa a cifra também para o processo de decriptação
+            cifraDES.init(Cipher.DECRYPT_MODE, chaveDES);
+
+            // Decriptografa o texto
+            byte[] textoDecriptografado = cifraDES.doFinal(txt);
+            return textoDecriptografado;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

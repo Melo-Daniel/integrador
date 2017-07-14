@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -46,7 +47,12 @@ import models.Demanda;
  * @author daniel.freitas
  */
 public class QuadroDocumentacaoGUI extends JFrame {
-
+    
+    private static Preferences pref = Preferences.userRoot();
+    
+    private static String m = pref.get("mes", "");
+    
+    
     private JMenuBar mbPrincipal;
     private JMenu mnArquivos, mnAjuda, mnSair;
     private JMenuItem miPerfil, miEmail, miPendente;
@@ -65,6 +71,7 @@ public class QuadroDocumentacaoGUI extends JFrame {
     Color vermelho = new Color(255, 102, 102);
     Color azul = new Color(128, 229, 255);
     Color verde = new Color(77, 255, 77);
+    Color laranja = new Color(255, 102, 0);
 
     public QuadroDocumentacaoGUI(String nome) {
         try {
@@ -75,9 +82,9 @@ public class QuadroDocumentacaoGUI extends JFrame {
         inicializarComponentes();
         definirEventos();
         this.nome = nome;
-        listarCarteira(nome);
         start();
         ColaboradorCTRL.setUsuariologado(nome);
+        listarCarteira(nome);
     }
 
     private void inicializarComponentes() {
@@ -98,15 +105,15 @@ public class QuadroDocumentacaoGUI extends JFrame {
         miPerfil = new JMenuItem("Perfil");
         mnArquivos.add(miPerfil);
 
-        miEmail = new JMenuItem("Geral");
+        miEmail = new JMenuItem("Gerenciador de Emails");
         mnArquivos.add(miEmail);
 
-        miPendente = new JMenuItem("Pendente");
+        miPendente = new JMenuItem("Arquivos Pendentes");
         mnArquivos.add(miPendente);
 
         lbLogo = new JLabel();
         lbLogo.setBounds(0, 0, 90, 80);
-        lbLogo.setIcon(new ImageIcon("C:\\Users\\daniel.freitas\\Documents\\NetBeansProjects\\Conversor de Extratos\\src\\img\\logo.jpg"));
+        lbLogo.setIcon(new ImageIcon(ClassLoader.getSystemResource("img\\logo.jpg")));
         add(lbLogo);
         lbUsuario = new JLabel("Bem vinda " + nome);
         lbUsuario.setBounds(480, 10, 100, 25);
@@ -128,7 +135,7 @@ public class QuadroDocumentacaoGUI extends JFrame {
 
         cbMes = new JComboBox(meses);
         cbMes.setBounds(480, 40, 100, 25);
-        cbMes.setSelectedIndex(4);
+        cbMes.setSelectedItem(m);
         add(cbMes);
 
         tfAno = new JTextField("2017");
@@ -174,17 +181,17 @@ public class QuadroDocumentacaoGUI extends JFrame {
         scCarteira.setBounds(10, 260, 570, 300);
 
         dmCarteira = new DefaultTableModel(new Object[]{
-            "Cód", "Empresa", "Regime", "Priori.", "Colaborador Cont."
+            "Cód", "Empresa", "Regime", "Financeiro", "Extratos"
         }, 0);
 
         tbCarteira = new JTable(dmCarteira);
 
         tbCarteira.setRowHeight(25);
         tbCarteira.getColumnModel().getColumn(0).setPreferredWidth(30);
-        tbCarteira.getColumnModel().getColumn(1).setPreferredWidth(350);
-        tbCarteira.getColumnModel().getColumn(2).setPreferredWidth(100);
-        tbCarteira.getColumnModel().getColumn(3).setPreferredWidth(20);
-        tbCarteira.getColumnModel().getColumn(3).setPreferredWidth(50);
+        tbCarteira.getColumnModel().getColumn(1).setPreferredWidth(300);
+        tbCarteira.getColumnModel().getColumn(2).setPreferredWidth(90);
+        tbCarteira.getColumnModel().getColumn(3).setPreferredWidth(60);
+        tbCarteira.getColumnModel().getColumn(4).setPreferredWidth(50);
 
         scCarteira.setViewportView(tbCarteira);
         add(scCarteira);
@@ -220,9 +227,13 @@ public class QuadroDocumentacaoGUI extends JFrame {
                     int cod = (int) tbCarteira.getValueAt(row, 0);
                     int resp = 0;
                     ArrayList<File> l = Suporte.listarExtatos(cod, cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText()));
-
+                    ArrayList<File> m = Suporte.verificarArquivo(cod, String.valueOf(cbMes.getSelectedIndex() + 1), Integer.parseInt(tfAno.getText()));
                     String corpo = "";
-                    if (l != null && Suporte.verificarArquivo(cod, String.valueOf(cbMes.getSelectedIndex() + 1))) {
+                    if ((l != null && l.size() > 0) && (m != null && m.size() > 0)) {
+                        System.out.println(l.size() + " - " + m.size());
+                        for (File f : m) {
+                            corpo += f.getAbsolutePath() + "\n";
+                        }
                         for (File f : l) {
 
                             corpo += (Suporte.ajustarCaminho(f.getAbsolutePath())) + "\n";
@@ -231,8 +242,9 @@ public class QuadroDocumentacaoGUI extends JFrame {
                                 + corpo);
 
                     } else {
+
                         resp = JOptionPane.showConfirmDialog(null, "Não existem arquivos nas pastas do mês selecionado!\n"
-                                + " Tem certeza que deseja marcar os documentos como recebidos?");
+                                + "\nTem certeza que deseja marcar os documentos como recebidos?");
                     }
 
                     if (resp == 0) {
@@ -253,8 +265,14 @@ public class QuadroDocumentacaoGUI extends JFrame {
                     JOptionPane.showMessageDialog(null, "Selecione uma linha");
                 } else {
                     int cod = (int) tbCarteira.getValueAt(row, 0);
-                    CarteiraCTRL.desmarcarRecebido(cod);
-                    atualizarLista();
+                    int mes = cbMes.getSelectedIndex() + 1;
+                    int ano = Integer.parseInt(tfAno.getText());
+                    int res = JOptionPane.showConfirmDialog(null, "Você tem certeja que quer desmarcar este item?");
+                    if (res == 0) {
+                        CarteiraCTRL.desmarcarRecebido(cod, mes, ano);
+                        listarCarteira(nome);
+                    }
+
                 }
             }
         });
@@ -262,6 +280,7 @@ public class QuadroDocumentacaoGUI extends JFrame {
         cbMes.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
+                pref.put("mes",(String)cbMes.getSelectedItem());
                 listarCarteira(nome);
             }
         });
@@ -319,7 +338,7 @@ public class QuadroDocumentacaoGUI extends JFrame {
     };
 
     public void start() {
-        t.scheduleAtFixedRate(task, 10000, 10000);
+        t.scheduleAtFixedRate(task, 10000, 20000);
     }
 
     public static void abrir() {
@@ -334,13 +353,22 @@ public class QuadroDocumentacaoGUI extends JFrame {
 
     public void listarCarteira(String nome) {
         dmCarteira.setRowCount(0);
+
         for (Demanda d : lista) {
+            int i = 0;
+            try {
+                i = Suporte.listarExtatos(d.getCod(), cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText())).size();
+            } catch (NullPointerException ex) {
+                i = 0;
+            }
+
+            int j = Suporte.verificarArquivo(d.getCod(), String.valueOf(cbMes.getSelectedIndex() + 1), Integer.parseInt(tfAno.getText())).size();
             dmCarteira.addRow(new Object[]{
                 d.getCod(),
                 d.getEmpresa(),
                 d.getRegime(),
-                d.getPrioridadeRelacionamento(),
-                d.getColaboradorContabil()
+                j,
+                i
             });
         }
     }
@@ -363,6 +391,8 @@ public class QuadroDocumentacaoGUI extends JFrame {
                     c.setBackground(verde);
                 } else if (status == 2) {
                     c.setBackground(azul);
+                } else if (status == 5) {
+                    c.setBackground(laranja);
                 } else {
                     c.setBackground(vermelho);
                 }
@@ -375,13 +405,19 @@ public class QuadroDocumentacaoGUI extends JFrame {
     public void pesquisar(String txt) {
         dmCarteira.setRowCount(0);
         for (Demanda d : CarteiraCTRL.pesquisa(txt, lista)) {
+            int i = 0;
+            try {
+                i = Suporte.listarExtatos(d.getCod(), cbMes.getSelectedIndex() + 1, Integer.parseInt(tfAno.getText())).size();
+            } catch (NullPointerException ex) {
+                i = 0;
+            }
+            int j = Suporte.verificarArquivo(d.getCod(), String.valueOf(cbMes.getSelectedIndex() + 1), Integer.parseInt(tfAno.getText())).size();
             dmCarteira.addRow(new Object[]{
                 d.getCod(),
                 d.getEmpresa(),
                 d.getRegime(),
-                d.getPrioridadeRelacionamento(),
-                d.getColaboradorContabil(),
-                d.getColaboradorRelacionamento()
+                j,
+                i
             });
         }
     }

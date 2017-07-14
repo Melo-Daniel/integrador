@@ -8,7 +8,6 @@ package integrador;
 
 import SendEmail.SendEmail;
 import DAO.conexaoDominio;
-import com.sybase.jdbc3.a.a.c;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Timer;

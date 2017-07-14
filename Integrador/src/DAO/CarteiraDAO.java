@@ -63,7 +63,7 @@ public class CarteiraDAO {
         Demanda d = new Demanda();
 
         String query = "SELECT * FROM TB_DOCUMENTACAO WHERE DOC_COLABORADOR_RELACIONAMENTO = '" + nome + "' AND DOC_COD = "+cod;
-
+        System.out.println(query);
         try {
             stm = con.prepareStatement(query);
             rs = stm.executeQuery();
@@ -267,9 +267,14 @@ public class CarteiraDAO {
         return false;
     }
 
-    public boolean desmarcarRecebida(int cod) {
-        String query = "UPDATE TB_DOCUMENTACAO SET DOC_STATUS = 1 WHERE DOC_COD = " + cod;
-
+    public boolean desmarcarRecebida(int cod,int mes,int ano) {
+        String query = "UPDATE TB_RECEBIMENTO_ARQUIVOS "
+                + "SET RAR_STATUS = 7 "
+                + "WHERE "
+                + "RAR_DOC_COD = " + cod + " and "
+                + "RAR_MES = "+ mes + " and "
+                + "RAR_ANO = " + ano;
+        System.out.println(query);
         try {
             stm = con.prepareStatement(query);
             return !stm.execute();

@@ -19,6 +19,7 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -38,11 +39,16 @@ import models.Demanda;
  * @author daniel.freitas
  */
 public class AdministradorGUI extends JFrame {
+    
+    private static Preferences pref = Preferences.userRoot();
+    
+    private static String m = pref.get("mes", "");
+    
     Timer t = new Timer();
     private JScrollPane scQuadro;
     private JTable tbQuadro;
     private DefaultTableModel dm;
-    private JButton btMarcar, btDesmarcar;
+    private JButton btMarcar, btDesmarcar,btArquivoInvalido;
     private JTextField tfPesquisa,tfAno;
     private JComboBox cbMes;
     private JLabel lbPs,lbAzul,lbVermelho,lbVerde, lbLr, lbRecebidoPs, lbRecebidoLr, lbImportado, lbLogo, lbUsuario;
@@ -51,6 +57,7 @@ public class AdministradorGUI extends JFrame {
     Color azul = new Color(128, 229, 255);
     Color verde = new Color(77, 255, 77);
     Color azulescuro = new Color(0, 82, 102);
+    Color laranja = new Color(255, 102, 0);
     
     public AdministradorGUI() {
         try {
@@ -124,6 +131,10 @@ public class AdministradorGUI extends JFrame {
         tfPesquisa.setBounds(10,230,200,25);
         add(tfPesquisa);
         
+        btArquivoInvalido = new JButton("Invalidar");
+        btArquivoInvalido.setBounds(360, 230, 100, 25);
+        add(btArquivoInvalido);
+        
         btMarcar = new JButton("Importado");
         btMarcar.setBounds(470, 230, 100, 25);
         add(btMarcar);
@@ -189,6 +200,26 @@ public class AdministradorGUI extends JFrame {
             }
         });
         
+        btArquivoInvalido.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = tbQuadro.getSelectedRow();
+                if(row == -1){
+                    JOptionPane.showMessageDialog(null, "Selecione uma linha");
+                }else{
+                    int cod = (int)tbQuadro.getValueAt(row, 0);
+                    int mes = cbMes.getSelectedIndex()+1;
+                    int ano = Integer.parseInt(tfAno.getText());
+                    
+                    int res = JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja marcar esses arquivos como inválidos?");
+                    if(res == 0){
+                        AdministradorCTRL.marcarArquivoInvalido(cod, mes, ano);
+                    }
+                }
+            }
+        });
+        
+        
         tfPesquisa.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -209,6 +240,7 @@ public class AdministradorGUI extends JFrame {
         cbMes.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
+                pref.put("mes", (String)cbMes.getSelectedItem());
                 listarEmpresas();
             }
         });
@@ -281,7 +313,10 @@ public class AdministradorGUI extends JFrame {
                     c.setBackground(verde);
                 } else if (status == 2) {
                     c.setBackground(azul);
-                } else {
+                } else if (status == 5) {
+                    c.setBackground(laranja);
+                }
+                else {
                     c.setBackground(vermelho);
                 }
 

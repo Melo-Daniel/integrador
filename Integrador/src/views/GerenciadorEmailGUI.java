@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -39,7 +41,7 @@ import models.Demanda;
 public class GerenciadorEmailGUI extends JFrame {
 
     private JComboBox cbRegimes, cbMes;
-    private JButton btEnviar;
+    private JButton btEnviar,btEnviarSelecionados;
     private JLabel lb;
     private JTextField tfAno;
     private JCheckBox chLucroReal, chSimples, chPresumido, chMei, chIsento, chTodos;
@@ -66,7 +68,7 @@ public class GerenciadorEmailGUI extends JFrame {
 
     private void inicializarComponentes() {
         setTitle("Gerenciar Emails " + nome);
-        setBounds(0, 0, 500, 450);
+        setBounds(0, 0, 500, 500);
         setLayout(null);
 
         chTodos = new JCheckBox("Todos");
@@ -128,7 +130,7 @@ public class GerenciadorEmailGUI extends JFrame {
         }, 0);
 
         tbCarteira = new JTable(dmCarteira);
-
+        atualizarLista();
         tbCarteira.setRowHeight(25);
         tbCarteira.getColumnModel().getColumn(0).setPreferredWidth(40);
         tbCarteira.getColumnModel().getColumn(1).setPreferredWidth(350);
@@ -136,9 +138,36 @@ public class GerenciadorEmailGUI extends JFrame {
 
         scCarteira.setViewportView(tbCarteira);
         add(scCarteira);
+        
+        btEnviarSelecionados = new JButton("Enviar para empresas selecionadas");
+        btEnviarSelecionados.setBounds(10,440,200,25);
+        add(btEnviarSelecionados);
     }
 
     private void definirEventos() {
+        btEnviarSelecionados.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rows[] = tbCarteira.getSelectedRows();
+                int mes = cbMes.getSelectedIndex()+1;
+                int ano = Integer.parseInt(tfAno.getText());
+                int cont = 0;
+                for(int i = 0; i < rows.length; i++){
+                    int cod = (int)tbCarteira.getValueAt(rows[i], 0);
+                    String regime = (String)tbCarteira.getValueAt(rows[i], 2);
+                    Demanda d = CarteiraCTRL.getEmpresaCodigo(nome.toUpperCase(), cod);
+                    System.out.println(d.getRegime());
+                    if(EmailCTRL.enviarEmailSelecionado(mes, ano, d, nome)){
+                        cont++;
+                        System.out.println(cont + " - " + i);
+                    }
+                    if(cont > 0){
+                        JOptionPane.showMessageDialog(null, "Emails enviados com td o sucesso!");
+                    }
+                }
+            }
+        });
+        
         cbMes.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -205,10 +234,13 @@ public class GerenciadorEmailGUI extends JFrame {
                 }
             }
         });
+        
+        
+        
     }
 
     public void abrir() {
-        GerenciadorEmailGUI g = new GerenciadorEmailGUI("PEDRITA");
+        GerenciadorEmailGUI g = new GerenciadorEmailGUI(nome);
         g.setVisible(true);
         g.setLocationRelativeTo(null);
         g.setResizable(false);
@@ -256,10 +288,12 @@ public class GerenciadorEmailGUI extends JFrame {
                 table.getColumnModel().getColumn(1).setCellRenderer(this);
                 table.getColumnModel().getColumn(2).setCellRenderer(this);
                 int cod = (int) table.getModel().getValueAt(row, 0);
-
+                table.setSelectionBackground(Color.lightGray);
+                table.setSelectionForeground(Color.blue);
                 int status = CarteiraCTRL.getEmailStatus(cod,cbMes.getSelectedIndex()+1,Integer.parseInt(tfAno.getText()));
                 if(status == 2){
                     c.setBackground(azul);
+                    
                 }else{
                     c.setBackground(vermelho);
                 }
@@ -268,4 +302,5 @@ public class GerenciadorEmailGUI extends JFrame {
             }
         });
     }
+    
 }

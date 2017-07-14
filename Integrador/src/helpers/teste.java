@@ -5,25 +5,30 @@
  */
 package helpers;
 
-  import java.security.InvalidKeyException;
-  import java.security.NoSuchAlgorithmException;
-   
-  import javax.crypto.BadPaddingException;
-  import javax.crypto.Cipher;
-  import javax.crypto.IllegalBlockSizeException;
-  import javax.crypto.KeyGenerator;
-  import javax.crypto.NoSuchPaddingException;
-  import javax.crypto.SecretKey;
-   
-  public class teste
-  {
-   
-   
-         public static void main(String[] argv) {
-             byte[] e = Suporte.encriptar("123sdhdfghdfghdfghdfghdfgh");
-             System.out.println("Encriptado: " + e);
-             System.out.println(Suporte.decriptar(e));
-   
-         }
-         
-  }
+import controllers.CarteiraCTRL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import models.Demanda;
+
+public class teste {
+
+    public static void main(String[] argv) {
+        
+        
+            System.out.println(447);
+            //int i = Suporte.listarExtatos(447, 5, 2017).size();
+            int j = Suporte.verificarArquivo(447, "5", 2017).size();
+            System.out.println(j);
+        
+
+    }
+
+}

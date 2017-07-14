@@ -60,7 +60,7 @@ public class Login extends JFrame {
         lbSenha.setBounds(10, 50, 100, 25);
         add(lbSenha);
 
-        pfSenha = new JPasswordField(senha);
+        pfSenha = new JPasswordField();
         pfSenha.setBounds(60, 50, 100, 25);
         add(pfSenha);
 
@@ -89,6 +89,7 @@ public class Login extends JFrame {
                     pref.put("usuario", tfNome.getText());
                     
                     new AdministradorGUI().abrir();
+                    dispose();
                 } else {
                     if (ColaboradorCTRL.Logar(tfNome.getText().toUpperCase(), pfSenha.getText())) {
                         pref.put("usuario", tfNome.getText());
